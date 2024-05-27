@@ -82,7 +82,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 ?>
 
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var requestRunning = false,
         clipboardForLogin,
         clipboardForPassword,
@@ -2835,9 +2835,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('#form-item-upload-pickfilesList').append(
                 '<div id="upload-file_' + file.id + '">' +
                 '<span id="upload-file-remove_' + file.id +
-                '><a href="#" onclick="$(this).closest(\'div\').remove();"><i class=" fa fa-trash mr-2 pointer"></i></a></span> ' +
+                '><a href="#" id="closestDivRemoveBtn' + file.id + '"><i class=" fa fa-trash mr-2 pointer"></i></a></span> ' +
                 htmlEncode(file.name) + ' (' + plupload.formatSize(file.size) + ')' +
                 '</div>');
+                document.getElementById("closestDivRemoveBtn" + file.id).addEventListener("click", function() {$(this).closest('div').remove();});
             $("#form-item-hidden-pickFilesNumber").val(
                 parseInt($("#form-item-hidden-pickFilesNumber").val()) + 1
             );

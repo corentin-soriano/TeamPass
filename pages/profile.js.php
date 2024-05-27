@@ -79,7 +79,7 @@ if ($checkUserAccess->checkSession() === false || $checkUserAccess->userAccessPa
 ?>
 
 
-<script type='text/javascript'>
+<script nonce="<?php echo $csp_nonce; ?>" type='text/javascript'>
     <?php if (isset($SETTINGS['api']) === true && (int) $SETTINGS['api'] === 1) : ?>
         // If user api is empty then generate one
         if ($('#profile-user-api-token').text() === '') {

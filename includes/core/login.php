@@ -185,7 +185,7 @@ if (isset($SETTINGS['google_authentication']) === true && (int) $SETTINGS['googl
                 </div>
                 <input type="text" id="ga_code" class="form-control submit-button" placeholder="' . $lang->get('ga_identification_code') . '" />
                 <span class="input-group-append">
-                    <button type="button" class="btn btn-info btn-flat" onclick="send_user_new_temporary_ga_code()">
+                    <button type="button" class="btn btn-info btn-flat" id="sendUserNewTmpGaCodeBtn">
                         <i class="fa-solid fa-envelope form-control-feedback pointer infotip" 
                     title="' . $lang->get('i_need_to_generate_new_ga_code') . '"></i>
                     </button>

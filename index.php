@@ -39,6 +39,9 @@ use TeampassClasses\ConfigManager\ConfigManager;
 header('X-XSS-Protection: 1; mode=block');
 // deepcode ignore TooPermissiveXFrameOptions: Not the case as sameorigin is used
 header('X-Frame-Options: SameOrigin');
+// Content-Security-Policy
+$csp_nonce = base64_encode(random_bytes(16));
+header("Content-Security-Policy: default-src 'none';script-src 'self' 'nonce-{$csp_nonce}';style-src 'self' 'unsafe-inline';img-src 'self' data:;font-src 'self';connect-src 'self';worker-src blob:");
 
 // Cache Headers
 header("Cache-Control: no-cache, no-store, must-revalidate");
@@ -59,7 +62,7 @@ if (file_exists(__DIR__.'/includes/config/settings.php') === false) {
     // This should never happen, but in case it does
     // this means if headers are sent, redirect will fallback to JS
     if (headers_sent()) {
-        echo '<script language="javascript" type="text/javascript">document.location.replace("install/install.php");</script>';
+        echo '<script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">document.location.replace("install/install.php");</script>';
     } else {
         header('Location: install/install.php');
     }
@@ -89,7 +92,7 @@ $antiXss = new AntiXSS();
 if (isset($SETTINGS['teampass_version']) === true && version_compare(TP_VERSION, $SETTINGS['teampass_version']) > 0) {
     // Perform redirection
     if (headers_sent()) {
-        echo '<script language="javascript" type="text/javascript">document.location.replace("install/install.php");</script>';
+        echo '<script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">document.location.replace("install/install.php");</script>';
     } else {
         header('Location: install/upgrade.php');
     }
@@ -181,7 +184,7 @@ if (array_key_exists($get['page'], $utilitiesPages) === true) {
 }
 
 ?>
-<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd' nonce="<?php echo $csp_nonce; ?>">
 
 <html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='en'>
 
@@ -190,7 +193,7 @@ if (array_key_exists($get['page'], $utilitiesPages) === true) {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <title>Teampass</title>
-    <script type='text/javascript'>
+    <script nonce="<?php echo $csp_nonce; ?>" type='text/javascript'>
         //<![CDATA[
         if (window.location.href.indexOf('page=') === -1 &&
             (window.location.href.indexOf('otv=') === -1 &&
@@ -657,7 +660,7 @@ echo '
                         <i class="fa-solid fa-users mr-2 infotip text-info pointer" title="<?php echo $session_nb_users_online . ' ' . $lang->get('users_online'); ?>"></i>
                         <a href="<?php echo DOCUMENTATION_URL; ?>" target="_blank" class="text-info"><i class="fa-solid fa-book mr-2 infotip" title="<?php echo $lang->get('documentation_canal'); ?>"></i></a>
                         <a href="<?php echo HELP_URL; ?>" target="_blank" class="text-info"><i class="fa-solid fa-life-ring mr-2 infotip" title="<?php echo $lang->get('admin_help'); ?>"></i></a>
-                        <i class="fa-solid fa-bug infotip pointer text-info" title="<?php echo $lang->get('bugs_page'); ?>" onclick="generateBugReport()"></i>
+                        <i class="fa-solid fa-bug infotip pointer text-info" title="<?php echo $lang->get('bugs_page'); ?>" id="generateBugReportBtn"></i>
                     </div>
                     <?php
     ?>
@@ -1077,7 +1080,7 @@ echo '
         );
         // REDIRECTION PAGE ERREUR
         echo '
-            <script language="javascript" type="text/javascript">
+            <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
             <!--
                 sessionStorage.clear();
                 store.set(
@@ -1276,7 +1279,7 @@ echo '
 
 </html>
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     //override defaults
     /*alertify.defaults.transition = "slide";
     alertify.defaults.theme.ok = "btn btn-primary";

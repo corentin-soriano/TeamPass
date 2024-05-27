@@ -92,7 +92,7 @@ $session->set('key', SessionManager::getCookieValue('PHPSESSID'));
 
 echo '
     <script type="text/javascript" src="../../plugins/store.js/dist/store.everything.min.js"></script>
-    <script language="javascript" type="text/javascript">
+    <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
     <!--
         // Clear localstorage
         store.remove("teampassApplication");

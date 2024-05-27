@@ -41,7 +41,7 @@ if (
         || (int) $session_user_admin === 1)
 ) {
     ?>
-    <script type="text/javascript">
+    <script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
         toastr.remove();
         toastr.info(
             '<?php echo $lang->get('index_maintenance_mode_admin'); ?>',
@@ -57,7 +57,7 @@ $session = SessionManager::getSession();
 $request = SymfonyRequest::createFromGlobals();
 ?>
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var userScrollPosition = 0,
         debugJavascript = true;
     let hourInMinutes = 60;
@@ -1938,6 +1938,7 @@ $request = SymfonyRequest::createFromGlobals();
             }
         );
     }
+    document.getElementById("generateBugReportBtn").addEventListener("click", generateBugReport);
 
     // This permits to manage the column width of tree/items
     $(document).on('click', '.columns-position', function() {

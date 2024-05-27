@@ -30,7 +30,7 @@ declare(strict_types=1);
  */
 
 ?>
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var debugJavascript = true;
 
     // On page load
@@ -982,6 +982,8 @@ declare(strict_types=1);
             }
         );
     }
+    // Event Handler CSP compliant :
+    document.getElementById("sendUserNewTmpGaCodeBtn").addEventListener("click", send_user_new_temporary_ga_code);
 
     /**
      * Permits to manage the MFA method to show

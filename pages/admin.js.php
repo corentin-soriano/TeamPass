@@ -83,7 +83,7 @@ header('Cache-Control: no-cache, no-store, must-revalidate');
 
 ?>
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var requestRunning = false;
 
     /**

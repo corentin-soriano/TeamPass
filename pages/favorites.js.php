@@ -78,7 +78,7 @@ if ($checkUserAccess->checkSession() === false || $checkUserAccess->userAccessPa
 ?>
 
 
-<script type='text/javascript'>
+<script nonce="<?php echo $csp_nonce; ?>" type='text/javascript'>
     // Open Item
     $('.fav-open').click(function() {
         if ($(this).data('item-id') !== '') {
