@@ -1938,7 +1938,6 @@ $request = SymfonyRequest::createFromGlobals();
             }
         );
     }
-    document.getElementById("generateBugReportBtn").addEventListener("click", generateBugReport);
 
     // This permits to manage the column width of tree/items
     $(document).on('click', '.columns-position', function() {
@@ -2064,4 +2063,14 @@ $request = SymfonyRequest::createFromGlobals();
             }
         );
     }
+
+    // Event Handlers CSP compliant :
+    $(document).ready(function() {
+        // Generate report button :
+        var generateBugReportBtn = document.getElementById("generateBugReportBtn");
+        if (generateBugReportBtn) {
+            generateBugReportBtn.addEventListener("click", generateBugReport);
+        }
+    });
+
 </script>

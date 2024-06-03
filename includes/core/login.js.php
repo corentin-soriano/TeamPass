@@ -982,8 +982,6 @@ declare(strict_types=1);
             }
         );
     }
-    // Event Handler CSP compliant :
-    document.getElementById("sendUserNewTmpGaCodeBtn").addEventListener("click", send_user_new_temporary_ga_code);
 
     /**
      * Permits to manage the MFA method to show
@@ -1065,4 +1063,14 @@ declare(strict_types=1);
             $('#2fa_methods_selector').addClass('hidden');
         }
     }
+
+    // Event Handlers CSP compliant :
+    $(document).ready(function() {
+        // Send OTP :
+        var sendUserNewTmpGaCodeBtn = document.getElementById("sendUserNewTmpGaCodeBtn");
+        if (sendUserNewTmpGaCodeBtn) {
+            sendUserNewTmpGaCodeBtn.addEventListener("click", send_user_new_temporary_ga_code);
+        }
+    });
+
 </script>

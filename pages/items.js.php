@@ -2835,10 +2835,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('#form-item-upload-pickfilesList').append(
                 '<div id="upload-file_' + file.id + '">' +
                 '<span id="upload-file-remove_' + file.id +
-                '><a href="#" id="closestDivRemoveBtn' + file.id + '"><i class=" fa fa-trash mr-2 pointer"></i></a></span> ' +
+                '><a href="#" class="closestDivRemoveBtn"><i class=" fa fa-trash mr-2 pointer"></i></a></span> ' +
                 htmlEncode(file.name) + ' (' + plupload.formatSize(file.size) + ')' +
                 '</div>');
-                document.getElementById("closestDivRemoveBtn" + file.id).addEventListener("click", function() {$(this).closest('div').remove();});
             $("#form-item-hidden-pickFilesNumber").val(
                 parseInt($("#form-item-hidden-pickFilesNumber").val()) + 1
             );
@@ -2850,8 +2849,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         up.refresh(); // Reposition Flash/Silverlight
     });
     //->
-
-
 
     /**
      * Save item changes
@@ -4393,7 +4390,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         $.each((data), function(i, value) {
             new_path_elem = '';
             if (value['visible'] === 1) {
-                new_path_elem = ' class="pointer" onclick="ListerItems(' + value['id'] + ', \'\', 0)"';
+                new_path_elem = ' class="pointer ListerItemsBtn" data-id="' + value['id'] + '"';
             }
 
             new_path += '<li class="breadcrumb-item" id="path_elem_' + value['id'] + '"' + new_path_elem + '>' + value['title'] + '</li>';
@@ -4936,7 +4933,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         html_kbs = '';
 
                     $(data.tags).each(function(index, value) {
-                        html_tags += '<span class="badge badge-success pointer tip mr-2" title="<?php echo $lang->get('list_items_with_tag'); ?>" onclick="searchItemsWithTags(\'' + value + '\')"><i class="fa-solid fa-tag fa-sm"></i>&nbsp;<span class="item_tag">' + value + '</span></span>';
+                        html_tags += '<span class="badge badge-success pointer tip mr-2 searchItemsWithTagsBtn" data-value="' + value + '" title="<?php echo $lang->get('list_items_with_tag'); ?>"><i class="fa-solid fa-tag fa-sm"></i>&nbsp;<span class="item_tag">' + value + '</span></span>';
                     });
                     if (html_tags === '') {
                         $('#card-item-tags').html('<?php echo $lang->get('none'); ?>');
@@ -5248,7 +5245,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     } else {
                         //Dont show details
                         $('#item_details_nok').removeClass('hidden');
-                        $('#item_details_nok_restriction_list').html('<div style="margin:10px 0 0 20px;"><b><?php echo $lang->get('author'); ?>: </b>' + data.author + '<br /><b><?php echo $lang->get('restricted_to'); ?>: </b>' + data.restricted_to + '<br /><br /><u><a href="#" onclick="openReasonToAccess()"><?php echo $lang->get('request_access_ot_item'); ?></a></u></div>');
+                        $('#item_details_nok_restriction_list').html('<div style="margin:10px 0 0 20px;"><b><?php echo $lang->get('author'); ?>: </b>' + data.author + '<br /><b><?php echo $lang->get('restricted_to'); ?>: </b>' + data.restricted_to + '<br /><br /><u><a href="#"><?php echo $lang->get('request_access_ot_item'); ?></a></u></div>');
 
                         $('#reason_to_access').remove();
                         $('#item_details_nok')
@@ -6382,6 +6379,13 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             searchItems(criteria);
         }
     }
+    // Event Handler CSP compliant :
+    document.querySelectorAll('.searchItemsWithTagsBtn').forEach(function(elem) {
+        elem.addEventListener('click', function() {
+            var value = this.getAttribute('data-value');
+            searchItemsWithTags(value);
+        });
+    });
 
     /**
      * Checks if string is base64 encoded
@@ -6543,6 +6547,20 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     }
     */
     $(document).ready(function() {
-        //
+        // Button to open items list
+        var ListerItemsBtn = document.querySelectorAll('.ListerItemsBtn');
+        if (ListerItemsBtn) {
+            ListerItemsBtn.forEach(function(elem) {
+                elem.addEventListener('click', function() {
+                    var id = this.getAttribute('data-id');
+                    ListerItems(id, '', 0);
+                });
+            });
+        }
+
+        // Remove closest div from a.closestDivRemoveBtn 
+        $(document).on('click', '.closestDivRemoveBtn', function() {
+            $(this).closest('div').remove();
+        });
     });
 </script>
