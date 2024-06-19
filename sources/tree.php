@@ -532,9 +532,11 @@ function prepareNodeJson(
                 ),
                 'a_attr' => array(
                     'id' => 'fld_' . $nodeId,
-                    'class' => $nodeData['folderClass'],
-                    'onclick' => 'ListerItems(' . $nodeId . ', ' . $nodeData['restricted'] . ', 0, 1)',
+                    'class' => $nodeData['folderClass'] . " ListerItemsBtn",
                     'data-title' => $currentNode->title,
+                    'data-id' => $nodeId,
+                    'data-restricted' => $nodeData['restricted'],
+                    'data-stop' => 1,
                 ),
                 'is_pf' => in_array($nodeId, $inputData['personalFolders']) === true ? 1 : 0,
                 'can_edit' => (int) $inputData['userCanCreateRootFolder'],

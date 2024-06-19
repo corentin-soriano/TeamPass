@@ -6553,7 +6553,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             ListerItemsBtn.forEach(function(elem) {
                 elem.addEventListener('click', function() {
                     var id = this.getAttribute('data-id');
-                    ListerItems(id, '', 0);
+                    var restricted = this.getAttribute('data-restricted') || '';
+                    var start = this.getAttribute('data-start') || '0';
+                    var stop = this.getAttribute('data-stop') || '0';
+                    ListerItems(id, restricted, start, stop);
                 });
             });
         }
