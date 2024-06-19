@@ -62,7 +62,7 @@ function teampassRedirect($url)
     }
 
     //If headers are sent... do java redirect... if java disabled, do html redirect.
-    echo '<script type="text/javascript">';
+    echo '<script nonce="'.$csp_nonce.'" type="text/javascript">';
     echo 'window.location.href="' . $antiXss->xss_clean($url) . '";';
     echo '</script>';
     echo '<noscript>';
@@ -225,7 +225,7 @@ if ((isset($get['session']) === true
     
     // REDIRECTION PAGE ERREUR
     echo '
-    <script language="javascript" type="text/javascript">
+    <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
     <!--
         sessionStorage.clear();
         window.location.href = "./includes/core/logout.php";
@@ -279,7 +279,7 @@ if (
     $session->invalidate();
     //Redirection
     echo '
-    <script language="javascript" type="text/javascript">
+    <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
     <!--
     setTimeout(function(){document.location.href="index.php"}, 1);
     -->
@@ -340,7 +340,7 @@ if (isset($SETTINGS['maintenance_mode']) === true && (int) $SETTINGS['maintenanc
 
         // REDIRECTION PAGE ERREUR
         echo '
-        <script language="javascript" type="text/javascript">
+        <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
         <!--
         setTimeout(
             function() {
@@ -398,7 +398,7 @@ if ($session->has('user-timezone') && null !== $session->get('user-id') && empty
         $session->invalidate();
         //redirection to index
         echo '
-        <script language="javascript" type="text/javascript">
+        <script nonce="'.$csp_nonce.'" language="javascript" type="text/javascript">
         <!--
         setTimeout(function(){document.location.href="index.php"}, 10);
         -->

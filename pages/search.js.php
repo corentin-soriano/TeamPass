@@ -81,7 +81,7 @@ $var['hidden_asterisk'] = '<i class="fas fa-asterisk mr-2"></i><i class="fas fa-
 ?>
 
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var pwdClipboard,
         loginClipboard,
         urlClipboard;

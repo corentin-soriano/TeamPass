@@ -1050,7 +1050,7 @@ if (null !== $post_type) {
         <div id="enc_html" style="display:none;">' . $encrypted_text . '</div>
         </body>
     </html>
-    <script type="text/javascript">
+    <script nonce="'.$csp_nonce.'" type="text/javascript">
         function uncryptTable()
         {
             // uncrypt file generation date

@@ -41,7 +41,7 @@ if (
         || (int) $session_user_admin === 1)
 ) {
     ?>
-    <script type="text/javascript">
+    <script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
         toastr.remove();
         toastr.info(
             '<?php echo $lang->get('index_maintenance_mode_admin'); ?>',
@@ -57,7 +57,7 @@ $session = SessionManager::getSession();
 $request = SymfonyRequest::createFromGlobals();
 ?>
 
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var userScrollPosition = 0,
         debugJavascript = true;
     let hourInMinutes = 60;
@@ -2063,4 +2063,14 @@ $request = SymfonyRequest::createFromGlobals();
             }
         );
     }
+
+    // Event Handlers CSP compliant :
+    $(document).ready(function() {
+        // Generate report button :
+        var generateBugReportBtn = document.getElementById("generateBugReportBtn");
+        if (generateBugReportBtn) {
+            generateBugReportBtn.addEventListener("click", generateBugReport);
+        }
+    });
+
 </script>

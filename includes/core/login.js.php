@@ -30,7 +30,7 @@ declare(strict_types=1);
  */
 
 ?>
-<script type="text/javascript">
+<script nonce="<?php echo $csp_nonce; ?>" type="text/javascript">
     var debugJavascript = true;
 
     // On page load
@@ -1063,4 +1063,14 @@ declare(strict_types=1);
             $('#2fa_methods_selector').addClass('hidden');
         }
     }
+
+    // Event Handlers CSP compliant :
+    $(document).ready(function() {
+        // Send OTP :
+        var sendUserNewTmpGaCodeBtn = document.getElementById("sendUserNewTmpGaCodeBtn");
+        if (sendUserNewTmpGaCodeBtn) {
+            sendUserNewTmpGaCodeBtn.addEventListener("click", send_user_new_temporary_ga_code);
+        }
+    });
+
 </script>
