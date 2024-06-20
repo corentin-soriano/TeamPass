@@ -6593,6 +6593,12 @@ switch ($inputData['type']) {
             );
         }
 
+        // XSS Filtering
+        foreach ($arr_data['folders'] as $folder_key => $folder_value) {
+            $arr_data['folders'][$folder_key]['title'] = htmlspecialchars($arr_data['folders'][$folder_key]['title']);
+            $arr_data['folders'][$folder_key]['path'] = htmlspecialchars($arr_data['folders'][$folder_key]['path']);
+        }
+
         // send data
         echo (string) prepareExchangedData(
             [
