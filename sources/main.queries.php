@@ -265,7 +265,7 @@ function passwordHandler(string $post_type, /*php8 array|null|string*/ $dataRece
         case 'test_current_user_password_is_correct'://action_password
             return isUserPasswordCorrect(
                 (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
-                (string) filter_var($dataReceived['password'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+                (string) $dataReceived['password'],
                 $SETTINGS
             );
 
@@ -2764,7 +2764,7 @@ function migrateTo3_DoUserPersonalItemsEncryption(
                     );
 
                     // Encrypt with Object Key
-                    $cryptedStuff = doDataEncryption($passwd['string']);
+                    $cryptedStuff = doDataEncryption(html_entity_decode($passwd['string']));
 
                     // Store new password in DB
                     DB::update(

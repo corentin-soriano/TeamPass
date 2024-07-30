@@ -60,20 +60,15 @@ $database = DB_NAME;
 $port = DB_PORT;
 $user = DB_USER;
 
-if (mysqli_connect(
-    $server,
-    $user,
-    $pass,
-    $database,
-    $port
-)) {
-    $db_link = mysqli_connect(
+if ($db_link = mysqli_connect(
         $server,
         $user,
         $pass,
         $database,
         $port
-    );
+    )
+) {
+    $db_link->set_charset(DB_ENCODING);
 } else {
     $res = 'Impossible to get connected to server. Error is: ' . addslashes(mysqli_connect_error());
     echo '[{"finish":"1", "msg":"", "error":"Impossible to get connected to server. Error is: ' . addslashes(mysqli_connect_error()) . '!"}]';
@@ -409,6 +404,41 @@ if (intval($tmp) === 0) {
 
 //---<END 3.1.2
 
+
+//--->BEGIN 3.1.2
+
+// Add index and change created/updated/finished_at type.
+try {
+    $alter_table_query = "
+        ALTER TABLE `" . $pre . "background_tasks_logs`
+        ADD INDEX idx_created_at (`created_at`),
+        MODIFY `created_at` INT,
+        MODIFY `updated_at` INT,
+        MODIFY `finished_at` INT
+    ";
+    mysqli_begin_transaction($db_link);
+    mysqli_query($db_link, $alter_table_query);
+    mysqli_commit($db_link);
+} catch (Exception $e) {
+    // Rollback transaction if index already exists.
+    mysqli_rollback($db_link);
+}
+
+// Add index on sharekeys_items.
+try {
+    $alter_table_query = "
+        ALTER TABLE `" . $pre . "sharekeys_items`
+        ADD INDEX idx_object_user (`object_id`, `user_id`)
+    ";
+    mysqli_begin_transaction($db_link);
+    mysqli_query($db_link, $alter_table_query);
+    mysqli_commit($db_link);
+} catch (Exception $e) {
+    // Rollback transaction if index already exists.
+    mysqli_rollback($db_link);
+}
+
+//---<END 3.1.3
 
 //---------------------------------------------------------------------
 

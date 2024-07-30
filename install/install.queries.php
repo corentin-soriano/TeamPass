@@ -382,7 +382,8 @@ if (null !== $post_type) {
 								`object_id` int(12) NOT NULL,
 								`user_id` int(12) NOT NULL,
 								`share_key` text NOT NULL,
-								PRIMARY KEY (`increment_id`)
+								PRIMARY KEY (`increment_id`),
+                                INDEX idx_object_user (`object_id`, `user_id`)
 							) CHARSET=utf8;'
                         );
                         $mysqli_result = mysqli_query(
@@ -1311,13 +1312,14 @@ $SETTINGS = array (';
                             $dbTmp,
                             "CREATE TABLE IF NOT EXISTS `" . $var['tbl_prefix'] . "background_tasks_logs` (
                             `increment_id` int(12) NOT NULL AUTO_INCREMENT,
-                            `created_at` varchar(20) NOT NULL,
+                            `created_at` INT NOT NULL,
                             `job` varchar(50) NOT NULL,
                             `status` varchar(10) NOT NULL,
-                            `updated_at` varchar(20) DEFAULT NULL,
-                            `finished_at` varchar(20) DEFAULT NULL,
+                            `updated_at` INT DEFAULT NULL,
+                            `finished_at` INT DEFAULT NULL,
                             `treated_objects` varchar(20) DEFAULT NULL,
-                            PRIMARY KEY (`increment_id`)
+                            PRIMARY KEY (`increment_id`),
+                            INDEX idx_created_at (`created_at`)
                             ) CHARSET=utf8;"
                         );
                     } else if ($task === 'ldap_groups_roles') {
