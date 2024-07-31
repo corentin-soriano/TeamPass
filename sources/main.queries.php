@@ -530,7 +530,7 @@ function keyHandler(string $post_type, /*php8 array|null|string */$dataReceived,
         case 'change_private_key_encryption_password'://action_key
             return changePrivateKeyEncryptionPassword(
                 (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
-                (string) filter_var($dataReceived['current_code'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+                (string) $dataReceived['current_code'],
                 (string) filter_var($dataReceived['new_code'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 (string) filter_var($dataReceived['action_type'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 $SETTINGS
@@ -1733,6 +1733,19 @@ function changePrivateKeyEncryptionPassword(
             } else {
                 $privateKey = decryptPrivateKey($post_current_code, $userData['private_key']);
                 $hashedPrivateKey = encryptPrivateKey($post_new_code, $privateKey);
+            }
+
+            // Should fail here to avoid break user private key.
+            if (strlen($privateKey) === 0 || strlen($hashedPrivateKey) < 30) {
+                error_log("Error reencrypt user private key. User ID: {$post_user_id}, Given OTP: '{$post_current_code}'");
+                return prepareExchangedData(
+                    array(
+                        'error' => true,
+                        'message' => $lang->get('error_otp_secret'),
+                        'debug' => '',
+                    ),
+                    'encode'
+                );
             }
 
             // Update user account
