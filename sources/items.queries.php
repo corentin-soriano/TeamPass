@@ -4169,7 +4169,7 @@ switch ($inputData['type']) {
                 $where->add('l.date=%l', '(SELECT date FROM ' . prefixTable('log_items') . " WHERE action IN ('at_creation', 'at_modification') AND id_item=i.id ORDER BY date DESC LIMIT 1)");
                 if (empty($limited_to_items) === false) {
                     $where->add('i.id IN %ls', explode(',', $limited_to_items));
-                }error_log('test');
+                }
 
                 $query_limit = ' LIMIT ' .
                     $start . ',' .
