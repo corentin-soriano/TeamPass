@@ -346,6 +346,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
     // Ensure correct height of folders tree
     $('#jstree').height(screenHeight - 270);
+    $('.card-body .table-responsive').height(screenHeight - 270);
 
     // Prepare iCheck format for checkboxes
     $('input[type="checkbox"].flat-blue, input[type="radio"].flat-blue').iCheck({
@@ -685,7 +686,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 $('.form-item-control').val('');
                 // Show edition form
                 $('.form-item').removeClass('hidden');
-                $('.item-details-card').addClass('hidden');
                 // Force update of simplepassmeter
                 $('#form-item-password').focus();
                 $('#form-item-label').focus();
@@ -845,11 +845,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             if (store.get('teampassItem').user_can_modify === 1) {
                 // Show copy form
-                $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
+                $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
                 $('.form-item-copy, .item-details-card-menu').removeClass('hidden');
                 // Prepare some data in the form
                 $('#form-item-copy-new-label').val($('#form-item-label').val());
                 $('#form-item-copy-destination').val($('#form-item-folder').val()).change();
+                toastr.remove();
             } else {
                 toastr.remove();
                 toastr.error(
@@ -923,8 +924,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             savePreviousView('.form-item-share');
 
             // Show share form
-            $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
-            $('.form-item-share, .item-details-card-menu').removeClass('hidden');
+            $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
+            $('.form-item-share').removeClass('hidden');
 
             //
             // > END <
@@ -938,7 +939,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             $('#form-item-notify-checkbox').iCheck('uncheck');
             // Show notify form
-            $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
+            $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
             $('.form-item-notify, .item-details-card-menu').removeClass('hidden');
 
             //
@@ -1104,13 +1105,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('#form-item-upload-pickfilesList').html('');
 
             // Hide all
-            $('.form-item, .form-item-action, .form-folder-action, .item-details-card, #folders-tree-card, .columns-position, #item-details-card-categories, #form-item-upload-pickfilesList, #card-item-expired')
+            $('.form-item, .form-item-action, .form-folder-action, #folders-tree-card, .columns-position, #form-item-upload-pickfilesList')
                 .addClass('hidden');
 
             // Show expected one
             $(store.get('teampassUser').previousView).removeClass('hidden');
-
-            closeItemDetailsCard();
         } else {
             $(store.get('teampassUser').previousView).removeClass('hidden');
             $(store.get('teampassUser').currentView).addClass('hidden');
@@ -1311,7 +1310,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
 
                     // Show/hide forms
-                    $('.item-details-card').removeClass('hidden');
+                    $('#folders-tree-card').removeClass('hidden');
                     $('.form-item-notify').addClass('hidden');
 
                     $('.infotip').tooltip();
@@ -1376,7 +1375,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         }
                     );
                 } else {
-                    $('.item-details-card').removeClass('hidden');
+                    $('#folders-tree-card').removeClass('hidden');
                     $('.form-item-share').addClass('hidden');
 
                     // Inform user
@@ -1584,7 +1583,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     );
                     
                     // Close
-                    $('.item-details-card').removeClass('hidden');
+                    $('#folder-tree-container').removeClass('hidden');
                     $('.form-item-copy').addClass('hidden');
                 } else {
                     // ERROR
@@ -2203,11 +2202,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     $('#folders-tree-card, .columns-position').removeClass('hidden');
                     $('.item-details-card, .form-item-action, .form-item, .form-folder-action, #card-item-expired')
                         .addClass('hidden');
+                    $('#folder-tree-container').addClass('col-md-5').removeClass('col-md-3');
+                    $('#items-list-container').addClass('col-md-7').removeClass('col-md-4');
+                    $('#items-details-container').addClass('hidden');
+
                 } else {
                     // Hide all
                     $('.form-item, .form-item-action, .form-folder-action, .item-details-card, #folders-tree-card, #card-item-expired')
                         .addClass('hidden');
-
                     // Show expected one
                     $(store.get('teampassUser').previousView).removeClass('hidden');
                 }
@@ -3174,12 +3176,15 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                         key: '<?php echo $session->get('key'); ?>'
                                     }
                                 );
+                            } else if ($('#form-item-button-save').data('action') === 'new_item') {
+                                window.location.href = '/index.php?page=items&group='+$('#form-item-folder').val()+'&id='+data.item_id;
+                                return;
                             } else {
                                 refreshTree($('#form-item-folder').val(), true);
                             }
 
                             // Refresh list of items inside the folder
-                            //ListerItems($('#form-item-folder').val(), '', 0);
+                            ListerItems($('#form-item-folder').val(), '', 0);
 
                             // Inform user
                             toastr.info(
@@ -3193,14 +3198,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             userDidAChange = false;
                             userUploadedFile = false;
 
-                            closeItemDetailsCard();
-                            /*
-                            // Hide all
-                            $('.form-item, .form-item-action, .form-folder-action, .item-details-card, #folders-tree-card, #card-item-expired').addClass('hidden');
-
-                            // Show expected one
-                            $(store.get('teampassUser').previousView).removeClass('hidden');
-                            */
+                            // Close edit form and reopen folders-tree-card with refreshed item.
+                            $('.form-item, #form-item-attachments-zone').addClass('hidden');
+                            $('#folders-tree-card').removeClass('hidden');
+                            item_id = store.get('teampassItem').id !== '' ? store.get('teampassItem').id : data.item_id;
+                            Details(item_id, 'show', true);
                         }
                     }
                 );
@@ -3312,10 +3314,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             }
         );
         
-        //$.when(
-        //    getPrivilegesOnItem(selectedFolderId, 0)
-        //).then(function() {
-        // Now read
         if (store.get('teampassItem').error === true) {
             toastr.remove();
             toastr.error(
@@ -3335,7 +3333,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             // Show edition form
             $('.form-item, #form-item-attachments-zone')
                 .removeClass('hidden');
-            $('.item-details-card, .form-item-copy, #form-item-password-options, .form-item-action, #item-details-card-categories, #folders-tree-card, .columns-position')
+            $('.form-item-copy, #form-item-password-options, .form-item-action, #folders-tree-card, .columns-position')
                 .addClass('hidden');
 
             // Initial 'user did a change'
@@ -4314,13 +4312,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 0;
         }).appendTo($tbody);
 
-        // Trick for list with only one entry
-        if (counter === 1) {
-            $('#teampass_items_list')
-                .append('<tr class="row"><td class="">&nbsp;</td></tr>');
-        }
-        adjustElemsSize();
-
         // Show tooltips
         $('.infotip').tooltip();
     }
@@ -4803,7 +4794,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     );
 
                     // Prepare forms
-                    $('#folders-tree-card, .columns-position').addClass('hidden');
+                    $('#folder-tree-container').removeClass('col-md-5').addClass('col-md-3');
+                    $('#items-list-container').removeClass('col-md-7').addClass('col-md-4');
+                    $('#items-details-container').removeClass('hidden');
+                    //$('#items-list-container');
                     if (actionType === 'show') {
                         // Prepare Views
                         $('.item-details-card, #item-details-card-categories').removeClass('hidden');
