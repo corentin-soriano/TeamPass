@@ -804,6 +804,7 @@ switch ($inputData['type']) {
 
             $arrData = array(
                 'error' => false,
+                'item_id' => $newID,
             );
         } else {
             // an error appears on JSON format
