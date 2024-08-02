@@ -4255,7 +4255,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     var description =
                         '<span class="text-secondary small">' +
                         (value.login !== '' ? ' - <i class="fa-solid fa-user mr-1"></i>' + value.login : '') +
-                        (value.email !== '' ? ' - <i class="fa-solid fa-mail-bulk mr-1"></i>' + value.email : '') +
+                        (value.email !== undefined && value.email !== '' ? ' - <i class="fa-solid fa-mail-bulk mr-1"></i>' + value.email : '') +
                         (value.link !== '' ? ' - <i class="fa-solid fa-link mr-1"></i>' + value.link : '') +
                         (value.desc.replace(/<.*>/gi, '').trim() !== '' ? ' - <i class="fa-solid fa-pen mr-1"></i>' + value.desc : '') +
                         '</span>';
