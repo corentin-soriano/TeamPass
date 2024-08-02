@@ -598,7 +598,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             savePreviousView('.form-folder-delete');
 
             // Show copy form
-            $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+            $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-delete').removeClass('hidden');
 
             // Prepare some data in the form
@@ -879,39 +879,30 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 return false;
             }
 
-            // Is user allowed
-            var levels = [50, 70];
-            if (levels.includes(store.get('teampassItem').item_rights) === false) {
-                toastr.remove();
-                toastr.error(
-                    '<?php echo $lang->get('error_not_allowed_to'); ?>',
-                    '', {
-                        timeOut: 5000,
-                        progressBar: true
-                    }
-                );
-                return false;
-            }
             toastr.remove();
 
             // Store current view
             savePreviousView('.form-item-delete');
 
-            if (debugJavascript === true) console.info('SHOW DELETE ITEM');
-            if (store.get('teampassItem').user_can_modify === 1) {
-                // Show delete form
-                $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
-                $('.form-item-delete, .item-details-card-menu').removeClass('hidden');
-            } else {
-                toastr.remove();
-                toastr.error(
-                    '<?php echo $lang->get('error_not_allowed_to'); ?>',
-                    '', {
-                        timeOut: 5000,
-                        progressBar: true
-                    }
-                );
-            }
+            $.when(
+                checkAccess(store.get('teampassItem').id, store.get('teampassItem').folderId, <?php echo $session->get('user-id'); ?>, 'delete')
+            ).then(function(retData) {
+                if (debugJavascript === true) console.info('SHOW DELETE ITEM');
+                if (store.get('teampassItem').user_can_modify === 1) {
+                    // Show delete form
+                    $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
+                    $('.form-item-delete, .item-details-card-menu').removeClass('hidden');
+                } else {
+                    toastr.remove();
+                    toastr.error(
+                        '<?php echo $lang->get('error_not_allowed_to'); ?>',
+                        '', {
+                            timeOut: 5000,
+                            progressBar: true
+                        }
+                    );
+                }
+            });
 
             //
             // > END <
@@ -960,7 +951,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             $('#form-item-otv-link').val('');
             // Show notify form
-            $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
+            $('#folders-tree-card').addClass('hidden');
             $('.form-item-otv, .item-details-card-menu').removeClass('hidden');
 
             //
@@ -2348,7 +2339,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             var itemIdToDelete = $(this).data('item-id');
 
             $.when(
-                checkAccess($(this).data('item-id'), selectedFolderId, <?php echo $session->get('user-id'); ?>, 'delete')
+                checkAccess($(this).data('item-id'), $(this).data('item-tree-id'), <?php echo $session->get('user-id'); ?>, 'delete')
             ).then(function(retData) {
                 // Is the user allowed?
                 if (retData.access === false || retData.delete === false) {
@@ -4247,7 +4238,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 // Trash icon
-                trash_link = '<span class="fa-stack fa-clickable warn-user pointer infotip mr-2 list-item-clicktodelete" title="<?php echo $lang->get('delete'); ?>" data-item-id="' + value.item_id + '"><i class="fa-solid fa-circle fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span>';
+                trash_link = '<span class="fa-stack fa-clickable warn-user pointer infotip mr-2 list-item-clicktodelete" title="<?php echo $lang->get('delete'); ?>" data-item-id="' + value.item_id + '" data-item-tree-id="' + value.tree_id + '"><i class="fa-solid fa-circle fa-stack-2x"></i><i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i></span>';
 
                 // Prepare Description
                 var description = '';
@@ -4783,6 +4774,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         'teampassItem',
                         function(teampassItem) {
                             teampassItem.id = parseInt(data.id),
+                            teampassItem.folderId = parseInt(data.folder),
                             teampassItem.timestamp = data.timestamp,
                             teampassItem.user_can_modify = data.user_can_modify,
                             teampassItem.anyone_can_modify = data.anyone_can_modify,
@@ -4793,15 +4785,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         }
                     );
 
-                    // Prepare forms
-                    $('#folder-tree-container').removeClass('col-md-5').addClass('col-md-3');
-                    $('#items-list-container').removeClass('col-md-7').addClass('col-md-4');
-                    $('#items-details-container').removeClass('hidden');
                     //$('#items-list-container');
                     if (actionType === 'show') {
                         // Prepare Views
                         $('.item-details-card, #item-details-card-categories').removeClass('hidden');
                         $('.form-item').addClass('hidden');
+                        $('#folder-tree-container').removeClass('col-md-5').addClass('col-md-3');
+                        $('#items-list-container').removeClass('col-md-7').addClass('col-md-4');
+                        $('#items-details-container').removeClass('hidden');
 
                         $('#form-item-suggestion-password').focus();
                         // If Description empty then remove it
@@ -4816,7 +4807,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         }
                     } else {
                         $('.form-item').removeClass('hidden');
-                        $('.item-details-card, #item-details-card-categories').addClass('hidden');
+                        $('#folders-tree-card').addClass('hidden');
                     }
                     $('#pwd-definition-size').val(data.pw.length);
 
