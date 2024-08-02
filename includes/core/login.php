@@ -82,11 +82,11 @@ echo '
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-header text-center">
-            <h3>',
+            <p>',
     isset($SETTINGS['custom_login_text']) === true
         && empty($SETTINGS['custom_login_text']) === false ? $SETTINGS['custom_login_text'] : $lang->get('index_get_identified'),
     '
-            </h3>
+            </p>
         </div>
 
         <div class="card-body login-card-body1">
