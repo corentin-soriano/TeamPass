@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 ?>
 <script type="text/javascript">
-    var debugJavascript = true;
+    debugJavascript = false;
 
     // On page load
     $(function() {
