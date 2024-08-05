@@ -126,7 +126,10 @@ declare(strict_types=1);
 
         // Relaunch authentication
         if (($("#pw").val() !== "" || $("#login").val() !== "")) {
-            document.getElementById('but_identify_user').click();
+            $(this).delay(500).queue(function() {
+                document.getElementById('but_identify_user').click();
+                $(this).dequeue();
+            });
         }
         
         // Show tooltips
