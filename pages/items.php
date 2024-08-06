@@ -1149,7 +1149,13 @@ foreach ($rows as $reccord) {
                                 </li>
                                 <li class="list-group-item">
                                     <b><?php echo $lang->get('url'); ?></b>
-                                    <a id="card-item-url" class="float-right ml-1" href="#" target="_blank"></a>
+                                    <button type="button" class="float-right btn btn-outline-info btn-sm ml-1 btn-copy-clipboard-clear" data-clipboard-target="#card-item-url-text" id="card-item-url-text-btn">
+                                        <i class="fa-regular fa-copy"></i>
+                                    </button>
+                                    <a id="card-item-url" class="float-right ml-1 btn btn-outline-info btn-sm" href="#" target="_blank">
+                                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                    </a>
+                                    <span id="card-item-url-text" class="float-right ml-1"></span>
                                 </li>
                             </ul>
                         </div>
