@@ -475,7 +475,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Store last
             // Show copy form
-            $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+            $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-add').removeClass('hidden');
 
             // Prepare some data in the form
@@ -515,7 +515,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             savePreviousView('.form-folder-add');
 
             // Show edit form
-            $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+            $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-add').removeClass('hidden');
             // Prepare some data in the form
             $("#form-folder-add-parent option[value='" + store.get('teampassApplication').selectedFolder + "']")
@@ -565,7 +565,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             savePreviousView('.form-folder-copy');
 
             // Show copy form
-            $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+            $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-copy').removeClass('hidden');
             // Prepare some data in the form
             $('#form-folder-copy-source').val(store.get('teampassApplication').selectedFolder).change();
@@ -619,7 +619,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
 
             // Show import form
-            $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+            $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-import').removeClass('hidden');
 
             //
@@ -994,7 +994,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             $('#form-item-notify-checkbox').iCheck('uncheck');
             // Show notify form
-            $('.form-item, .item-details-card, .form-item-action').addClass('hidden');
+            $('.form-item, .form-item-action').addClass('hidden');
             $('.form-item-server, .item-details-card-menu').removeClass('hidden');
 
             //
@@ -1162,7 +1162,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         );
 
         // Show user
-        $('.form-item, .item-details-card, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
+        $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
         $('.form-item-request-access').removeClass('hidden');
     });
 
@@ -4829,8 +4829,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                     $('#card-item-email').text(data.email);
                     $('#form-item-email, #form-item-suggestion-email').val(data.email);
-                    $('#card-item-url').html(data.url);
-                    $('#form-item-url, #form-item-suggestion-url').val($(data.url).text());
+                    $('#card-item-url-text').text(data.url);
+                    $('#card-item-url').attr("href", $('#card-item-url-text').text());
+                    $('#form-item-url, #form-item-suggestion-url').val($('#card-item-url-text').text());
                     $('#form-item-restrictedToUsers').val(JSON.stringify(data.id_restricted_to));
                     $('#form-item-restrictedToRoles').val(JSON.stringify(data.id_restricted_to_roles));
                     $('#form-item-folder').val(data.folder);
