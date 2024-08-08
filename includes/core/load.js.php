@@ -75,6 +75,14 @@ $request = SymfonyRequest::createFromGlobals();
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
         }
+
+        // Check theme on page load
+        switchTheme(false);
+        
+        // Switch light/dark theme button
+        $('#switch-theme').on('click', function() {
+            switchTheme(true);
+        });
     });
 
     /**
@@ -2061,6 +2069,73 @@ $request = SymfonyRequest::createFromGlobals();
                         });
                     }
                 }
+            }
+        );
+    }
+
+    /**
+     * Switch betwen light and dark themes.
+     * 
+     * @param {bool} switch_theme
+     */
+    function switchTheme(switch_theme) {
+        let theme = store.get('teampassUser').theme;
+
+        // Switch theme value if page loading
+        if (switch_theme) {
+            theme = (theme === 'dark' || theme === '') ? 'light' : 'dark'
+        }
+
+        if (theme === 'dark' || theme === '') {
+            // Meta theme-color (titlebar)
+            $('meta[name="theme-color"]').attr('content', '#343a40');
+
+            // Adminlte dark theme
+            $('body').addClass('dark-mode');
+            $('html').data('bs-theme', 'dark');
+
+            // jstree dark theme
+            $('#jstree').addClass('jstree-default-dark');
+
+            // Overload .main-header color
+            $('.main-header').removeClass('navbar-white navbar-light');
+            $('.main-header').addClass('navbar-dark');
+
+            // overload tp-action buttons
+            $('#navbarNav .tp-action').removeClass('text-navy');
+            $('#navbarNav .tp-action').addClass('text-white');
+            
+            // Overload buttons
+            $('.btn-outline-info').addClass('bg-gray-dark');
+            $('.card-header btn').addClass('bg-gray');
+        } else {
+            // Meta theme-color (titlebar)
+            $('meta[name="theme-color"]').attr('content', '#fff');
+
+            // Adminlte light theme
+            $('body').removeClass('dark-mode');
+            
+            // jstree dark theme
+            $('#jstree').removeClass('jstree-default-dark');
+            
+            // Restore .main-header default classes
+            $('.main-header').removeClass('navbar-dark');
+            $('.main-header').addClass('navbar-white navbar-light');
+            
+            // overload item-form-new-button buttons
+            $('#navbarNav .tp-action').addClass('text-navy');
+            $('#navbarNav .tp-action').removeClass('text-white');
+
+            // Overload buttons
+            $('.btn-outline-info').removeClass('bg-gray-dark');
+            $('.card-header btn').removeClass('bg-gray');
+        }
+
+        // Store new theme value
+        store.update(
+            'teampassUser',
+            function(teampassUser) {
+                teampassUser.theme = theme;
             }
         );
     }

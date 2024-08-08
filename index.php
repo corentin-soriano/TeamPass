@@ -207,6 +207,7 @@ if (array_key_exists($get['page'], $utilitiesPages) === true) {
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8' />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="theme-color" content="#FFF" /> 
     <title><?php echo $configManager->getSetting('teampass_title') ?? 'Teampass'; ?></title>
     <script type='text/javascript'>
         //<![CDATA[
@@ -269,7 +270,7 @@ if ((null === $session->get('user-validite_pw') || empty($session->get('user-val
         <div class="wrapper">
 
             <!-- Navbar -->
-            <nav class="main-header navbar navbar-expand navbar-white navbar-light border-bottom">
+            <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                 <!-- User encryption still ongoing -->
                 <div id="user_not_ready" class="alert alert-warning hidden pointer p-2 mt-2" style="position:absolute; left:200px;">
                     <span class="align-middle infotip ml-2" title="<?php echo $lang->get('keys_encryption_not_ready'); ?>"><?php echo $lang->get('account_not_ready'); ?><span id="user_not_ready_progress"></span><i class="fa-solid fa-hourglass-half fa-beat-fade mr-2 ml-2"></i></span>
@@ -340,6 +341,9 @@ if ((null === $session->get('user-validite_pw') || empty($session->get('user-val
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" id="controlsidebar"><i class="fa-solid fa-th-large"></i></a>
+                    </li>
+                    <li id="switch-theme" class="nav-item pointer">
+                        <i class="fa-solid fa-circle-half-stroke m-2 m-2"></i>
                     </li>
                 </ul>
             </nav>
@@ -1203,6 +1207,7 @@ echo '
         if (in_array($get['page'], ['items', 'import']) === true) {
             ?>
             <link rel="stylesheet" href="./plugins/jstree/themes/default/style.min.css" />
+            <link rel="stylesheet" href="./plugins/jstree/themes/default-dark/style.min.css" />
             <script src="./plugins/jstree/jstree.min.js" type="text/javascript"></script>
             <!-- countdownTimer -->
             <script src="./plugins/jquery.countdown360/jquery.countdown360.js"></script>
