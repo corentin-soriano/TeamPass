@@ -152,7 +152,7 @@ foreach ($rows as $reccord) {
             <div class="card text-center">
                 <div class="card-header">
                     <div class="card-tools-left">
-                        <button type="button" class="btn btn-gray but-back" id="but_back_top_left">
+                        <button type="button" class="btn btn-secondary but-back" id="but_back_top_left">
                             <i class="fa-solid fa-arrow-left"></i>
                         </button>
                     </div>
@@ -160,7 +160,7 @@ foreach ($rows as $reccord) {
                     <h5 id="form-item-title" class="clear-me-html" style="min-height:23px;"></h5>
 
                     <div class="card-tools">
-                        <button type="button" class="btn btn-tool btn-sm but-back" id="but_back_top_right">
+                        <button type="button" class="btn btn-secondary btn-sm but-back" id="but_back_top_right">
                             <i class="fa-solid fa-times"></i>
                         </button>
                     </div>
@@ -218,9 +218,9 @@ foreach ($rows as $reccord) {
                                     </div>
                                     <input id="form-item-password" type="password" class="form-control form-item-control" placeholder="<?php echo $lang->get('password'); ?>" data-field-name="pwd" data-change-ongoing="">
                                     <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary btn-no-click infotip password-generate" id="item-button-password-generate" title="<?php echo $lang->get('pw_generate'); ?>" data-id="form-item-password"><i class="fa-solid fa-random"></i></button>
-                                        <button class="btn btn-outline-secondary btn-no-click infotip" id="item-button-password-showOptions" title="<?php echo $lang->get('options'); ?>"><i class="fa-solid fa-sliders-h"></i></button>
-                                        <button class="btn btn-outline-secondary btn-no-click infotip" id="item-button-password-show" title="<?php echo $lang->get('mask_pw'); ?>"><i class="fa-solid fa-low-vision"></i></button>
+                                        <button class="btn btn-secondary btn-no-click infotip password-generate" id="item-button-password-generate" title="<?php echo $lang->get('pw_generate'); ?>" data-id="form-item-password"><i class="fa-solid fa-random"></i></button>
+                                        <button class="btn btn-secondary btn-no-click infotip" id="item-button-password-showOptions" title="<?php echo $lang->get('options'); ?>"><i class="fa-solid fa-sliders-h"></i></button>
+                                        <button class="btn btn-secondary btn-no-click infotip" id="item-button-password-show" title="<?php echo $lang->get('mask_pw'); ?>"><i class="fa-solid fa-low-vision"></i></button>
                                     </div>
                                 </div>
                                 <div class="container-fluid mb-0">
@@ -234,15 +234,15 @@ foreach ($rows as $reccord) {
                                 <div class="mt-1 hidden" id="form-item-password-options">
                                     <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
                                         <div class="btn-group btn-group-sm btn-group-toggle mr-2" data-toggle="buttons">
-                                            <label class="btn btn-outline-secondary btn-sm">
+                                            <label class="btn btn-secondary btn-sm">
                                                 <input type="checkbox" class="password-definition" id="pwd-definition-lcl">abc</label>
-                                            <label class="btn btn-outline-secondary btn-sm">
+                                            <label class="btn btn-secondary btn-sm">
                                                 <input type="checkbox" class="password-definition" id="pwd-definition-ucl">ABC</label>
-                                            <label class="btn btn-outline-secondary btn-sm">
+                                            <label class="btn btn-secondary btn-sm">
                                                 <input type="checkbox" class="password-definition" id="pwd-definition-numeric">123</label>
-                                            <label class="btn btn-outline-secondary btn-sm">
+                                            <label class="btn btn-secondary btn-sm">
                                                 <input type="checkbox" class="password-definition" id="pwd-definition-symbols">@#&amp;</label>
-                                            <label class="btn btn-outline-secondary btn-sm">
+                                            <label class="btn btn-secondary btn-sm">
                                                 <input type="checkbox" class="password-definition" id="pwd-definition-secure"><?php echo $lang->get('secure'); ?></label>
                                         </div>
 
