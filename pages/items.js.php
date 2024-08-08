@@ -2273,6 +2273,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         // Scroll back to position
         scrollBackToPosition();
+
+        // Extend menu size and trigger event listener
+        $('a[data-widget="pushmenu"]').click();
     }
 
 
@@ -4793,6 +4796,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#folder-tree-container').removeClass('col-md-5').addClass('col-md-3');
                         $('#items-list-container').removeClass('col-md-7').addClass('col-md-4');
                         $('#items-details-container').removeClass('hidden');
+                        // Reduce menu size and trigger event listener
+                        $('a[data-widget="pushmenu"]').click();
 
                         $('#form-item-suggestion-password').focus();
                         // If Description empty then remove it
