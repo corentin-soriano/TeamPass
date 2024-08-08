@@ -347,6 +347,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     // Ensure correct height of folders tree
     $('#jstree').height(screenHeight - 270);
     $('.card-body .table-responsive').height(screenHeight - 270);
+    $('#items-details-container').height(screenHeight - 270 + 59); // 59 = tables header/borders
 
     // Prepare iCheck format for checkboxes
     $('input[type="checkbox"].flat-blue, input[type="radio"].flat-blue').iCheck({

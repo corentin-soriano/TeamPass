@@ -1032,7 +1032,7 @@ foreach ($rows as $reccord) {
         </div>
 
         
-        <div id="items-details-container" class="col-md-5 hidden">
+        <div id="items-details-container" class="col-md-5 overflow-auto hidden">
             <!-- ITEM DETAILS -->
             <div class="row item-details-card item-details-card-menu">
                 <div class="col-12">
