@@ -77,11 +77,11 @@ $request = SymfonyRequest::createFromGlobals();
         }
 
         // Check theme on page load
-        switchTheme(false);
+        applyTheme(false);
         
         // Switch light/dark theme button
         $('#switch-theme').on('click', function() {
-            switchTheme(true);
+            applyTheme(true);
         });
     });
 
@@ -2078,15 +2078,16 @@ $request = SymfonyRequest::createFromGlobals();
      * 
      * @param {bool} switch_theme
      */
-    function switchTheme(switch_theme) {
-        let theme = store.get('teampassUser').theme;
+    function applyTheme(switch_theme) {
+        // Read actual theme (default = light)
+        let mode = $.cookie('teampass_theme') !== null ? $.cookie('teampass_theme') : 'light';
 
-        // Switch theme value if page loading
+        // Switch mode value if page loading
         if (switch_theme) {
-            theme = (theme === 'dark' || theme === '') ? 'light' : 'dark'
+            mode = (mode === 'dark') ? 'light' : 'dark'
         }
 
-        if (theme === 'dark' || theme === '') {
+        if (mode === 'dark') {
             // Meta theme-color (titlebar)
             $('meta[name="theme-color"]').attr('content', '#343a40');
 
@@ -2132,11 +2133,6 @@ $request = SymfonyRequest::createFromGlobals();
         }
 
         // Store new theme value
-        store.update(
-            'teampassUser',
-            function(teampassUser) {
-                teampassUser.theme = theme;
-            }
-        );
+        $.cookie('teampass_theme', mode, { expires: 365, secure: true});
     }
 </script>
