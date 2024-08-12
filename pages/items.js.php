@@ -891,6 +891,23 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $.when(
                 checkAccess(store.get('teampassItem').id, store.get('teampassItem').folderId, <?php echo $session->get('user-id'); ?>, 'delete')
             ).then(function(retData) {
+                // Is the user allowed?
+                if (retData.access === false || retData.delete === false) {
+                    toastr.remove();
+                    toastr.error(
+                        '<?php echo $lang->get('error_not_allowed_to'); ?>',
+                        '', {
+                            timeOut: 5000,
+                            progressBar: true
+                        }
+                    );
+
+                    requestRunning = false;
+
+                    // Finished
+                    return false;
+                }
+
                 if (debugJavascript === true) console.info('SHOW DELETE ITEM');
                 if (store.get('teampassItem').user_can_modify === 1) {
                     // Show delete form
@@ -6342,7 +6359,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     function searchItemsWithTags(criteria) {
         if (criteria !== '') {
             $('#folders-tree-card, .columns-position').removeClass('hidden');
-            $('.item-details-card, .form-item-action, .form-item, .form-folder-action').addClass('hidden');
+            $('.form-item-action, .form-item, .form-folder-action').addClass('hidden');
 
             $('#find_items').val(criteria);
 
