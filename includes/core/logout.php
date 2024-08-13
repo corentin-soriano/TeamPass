@@ -93,9 +93,6 @@ $session->set('key', SessionManager::getCookieValue('PHPSESSID'));
 ?>
 <script type="text/javascript" src="../../plugins/store.js/dist/store.everything.min.js"></script>
 <script language="javascript" type="text/javascript">
-    // Get user theme
-    theme = store.get('teampassTheme') !== undefined ? store.get('teampassTheme') : '';
-
     // Clear localstorage
     store.remove("teampassApplication");
     store.remove("teampassSettings");
@@ -103,11 +100,6 @@ $session->set('key', SessionManager::getCookieValue('PHPSESSID'));
     store.remove("teampassItem");
     sessionStorage.clear();
     localStorage.clear();
-
-    // Preserve user theme on logout
-    if (theme.mode !== undefined && theme.mode !== '') {
-        store.set('teampassTheme', theme);
-    }
     
     setTimeout(function() {
         document.location.href="../../index.php"
