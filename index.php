@@ -199,9 +199,10 @@ if (array_key_exists($get['page'], $utilitiesPages) === true) {
 }
 
 // Force dark theme on page generation
-$theme_body = $_COOKIE['teampass_theme'] === 'dark' ? 'dark-mode' : '';
-$theme_meta = $_COOKIE['teampass_theme'] === 'dark' ? '#343a40' : '#fff';
-$theme_navbar = $_COOKIE['teampass_theme'] === 'dark' ? 'navbar-dark' : 'navbar-white navbar-light';
+$theme = $_COOKIE['teampass_theme'] ?? 'light';
+$theme_body = $theme === 'dark' ? 'dark-mode' : '';
+$theme_meta = $theme === 'dark' ? '#343a40' : '#fff';
+$theme_navbar = $theme === 'dark' ? 'navbar-dark' : 'navbar-white navbar-light';
 
 ?>
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
