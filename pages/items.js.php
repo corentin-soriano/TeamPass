@@ -299,37 +299,37 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     });
 
     // load list of visible folders for current user
+    // Refresh data later to avoid php session lock which slows page display.
     $(this).delay(500).queue(function() {
         refreshVisibleFolders(true);
-
-        // Preload list of items
-        if (store.get('teampassApplication') !== undefined &&
-            store.get('teampassApplication').selectedFolder !== undefined &&
-            store.get('teampassApplication').selectedFolder !== ''
-        ) {
-            startedItemsListQuery = true;
-            ListerItems(store.get('teampassApplication').itemsListFolderId, '', 0);
-        }
-
-        // Show details of item
-        if (showItemOnPageLoad === true) {
-            // Display item details
-            $.when(
-                Details(itemIdToShow, 'show', true)
-            ).then(function() {
-                // Force previous view to Tree folders
-                store.update(
-                    'teampassUser',
-                    function(teampassUser) {
-                        teampassUser.previousView = '#folders-tree-card';
-                    }
-                );
-            });
-        }
-
-
         $(this).dequeue();
     });
+
+    // Preload list of items
+    if (store.get('teampassApplication') !== undefined &&
+        store.get('teampassApplication').selectedFolder !== undefined &&
+        store.get('teampassApplication').selectedFolder !== '' && 
+        showItemOnPageLoad === true
+    ) {
+        startedItemsListQuery = true;
+        ListerItems(store.get('teampassApplication').itemsListFolderId, '', 0);
+    }
+
+    // Show details of item
+    if (showItemOnPageLoad === true) {
+        // Display item details
+        $.when(
+            Details(itemIdToShow, 'show', true)
+        ).then(function() {
+            // Force previous view to Tree folders
+            store.update(
+                'teampassUser',
+                function(teampassUser) {
+                    teampassUser.previousView = '#folders-tree-card';
+                }
+            );
+        });
+    }
 
     // Keep the scroll position
     $(window).on("scroll", function() {
@@ -347,6 +347,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     // Ensure correct height of folders tree
     $('#jstree').height(screenHeight - 270);
     $('.card-body .table-responsive').height(screenHeight - 270);
+    $('#items-details-container').height(screenHeight - 270 + 59); // 59 = tables header/borders
 
     // Prepare iCheck format for checkboxes
     $('input[type="checkbox"].flat-blue, input[type="radio"].flat-blue').iCheck({
@@ -705,6 +706,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     codeviewIframeFilter: true
                 });
 
+                // Buttons more theme compliants
+                $('.btn-light').addClass('btn-secondary').removeClass('btn-light');
+
                 // Set folder
                 $('#form-item-folder').val(selectedFolderId).change();
                 // Select tab#1
@@ -887,6 +891,23 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $.when(
                 checkAccess(store.get('teampassItem').id, store.get('teampassItem').folderId, <?php echo $session->get('user-id'); ?>, 'delete')
             ).then(function(retData) {
+                // Is the user allowed?
+                if (retData.access === false || retData.delete === false) {
+                    toastr.remove();
+                    toastr.error(
+                        '<?php echo $lang->get('error_not_allowed_to'); ?>',
+                        '', {
+                            timeOut: 5000,
+                            progressBar: true
+                        }
+                    );
+
+                    requestRunning = false;
+
+                    // Finished
+                    return false;
+                }
+
                 if (debugJavascript === true) console.info('SHOW DELETE ITEM');
                 if (store.get('teampassItem').user_can_modify === 1) {
                     // Show delete form
@@ -2273,6 +2294,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         // Scroll back to position
         scrollBackToPosition();
+
+        // Extend menu size and trigger event listener
+        if ($('body').hasClass('sidebar-collapse') === true) {
+            $('a[data-widget="pushmenu"]').click();
+        }
     }
 
 
@@ -4793,6 +4819,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#folder-tree-container').removeClass('col-md-5').addClass('col-md-3');
                         $('#items-list-container').removeClass('col-md-7').addClass('col-md-4');
                         $('#items-details-container').removeClass('hidden');
+                        // Reduce menu size and trigger event listener
+                        if ($('body').hasClass('sidebar-collapse') === false) {
+                            $('a[data-widget="pushmenu"]').click();
+                        }
 
                         $('#form-item-suggestion-password').focus();
                         // If Description empty then remove it
@@ -4902,6 +4932,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             }
                         });
 
+                    // Buttons more theme compliants
+                    $('.btn-light').addClass('btn-secondary').removeClass('btn-light');
 
                     //prepare nice list of users / groups
                     var html_users = '',
@@ -6327,7 +6359,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     function searchItemsWithTags(criteria) {
         if (criteria !== '') {
             $('#folders-tree-card, .columns-position').removeClass('hidden');
-            $('.item-details-card, .form-item-action, .form-item, .form-folder-action').addClass('hidden');
+            $('.form-item-action, .form-item, .form-folder-action').addClass('hidden');
 
             $('#find_items').val(criteria);
 
