@@ -5176,6 +5176,15 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#card-item-email-btn').addClass('hidden');
                     }
 
+                    // Copy and open URL buttons
+                    if (data.url !== '') {
+                        $('#card-item-url-text-btn').removeClass('hidden');
+                        $('#card-item-url').removeClass('hidden');
+                    } else {
+                        $('#card-item-url-text-btn').addClass('hidden');
+                        $('#card-item-url').addClass('hidden');
+                    }
+
                     // Prepare auto_update info
                     $('#card-item-misc').html('');
                     if (parseInt(data.auto_update_pwd_frequency) !== '0') {
