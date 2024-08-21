@@ -86,6 +86,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     var requestRunning = false,
         clipboardForLogin,
         clipboardForPassword,
+        clipboardForPasswordListItems,
         clipboardForLink,
         clipboardOTPCode,
         query_in_progress = 0,
@@ -4483,7 +4484,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     /**
      *
      */
-    var clipboardForPassword; // global variable
     function Details(itemDefinition, actionType, hotlink = false)
     {
         if (debugJavascript === true) {
@@ -5115,11 +5115,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     // Prepare clipboard - COPY PASSWORD
                     if (data.pw !== '' && store.get('teampassItem').readyToUse === true) {
                         // Delete existing clipboard
-                        if (clipboardForPassword) {
-                            clipboardForPassword.destroy();
+                        if (clipboardForPasswordListItems) {
+                            clipboardForPasswordListItems.destroy();
                         }
                         // New clipboard
-                        clipboardForPassword = new ClipboardJS('#card-item-pwd-button', {
+                        clipboardForPasswordListItems = new ClipboardJS('#card-item-pwd-button', {
                                 text: function() {
                                     return (data.pw);
                                 }
