@@ -427,7 +427,8 @@ switch ($inputData['type']) {
                 // if not allowed then warn user
                 if (($session->has('user-create_item_without_password') && $session->has('user-create_item_without_password') && null !== $session->get('user-create_item_without_password')
                         && (int) $session->get('user-create_item_without_password') !== 1) ||
-                    empty($post_password) === false
+                    empty($post_password) === false ||
+                    (int) $post_folder_is_personal === 1
                 ) {
                     // NEW ENCRYPTION
                     $cryptedStuff = doDataEncryption($post_password);
@@ -803,6 +804,7 @@ switch ($inputData['type']) {
 
             $arrData = array(
                 'error' => false,
+                'item_id' => $newID,
             );
         } else {
             // an error appears on JSON format
@@ -2827,14 +2829,14 @@ switch ($inputData['type']) {
                 $arrData['show_detail_option'] = 2;
             }
 
-            $arrData['label'] = $dataItem['label'] === '' ? '' : htmlspecialchars_decode($dataItem['label'], ENT_QUOTES);
+            $arrData['label'] = $dataItem['label'] === '' ? '' : $dataItem['label'];
             $arrData['pw'] = $pw;
             $arrData['pw_decrypt_info'] = empty($pw) === true && $pwIsEmptyNormal === false ? 'error_no_sharekey_yet' : '';
             $arrData['email'] = empty($dataItem['email']) === true || $dataItem['email'] === null ? '' : $dataItem['email'];
-            $arrData['url'] = empty($dataItem['url']) === true ? '' : '<a href="'.$dataItem['url'].'" target="_blank">'.$dataItem['url'].'</a>';
+            $arrData['url'] = empty($dataItem['url']) === true ? '' : $dataItem['url'];
             $arrData['folder'] = $dataItem['id_tree'];
             $arrData['description'] = $dataItem['description'];
-            $arrData['login'] = htmlspecialchars_decode(str_replace(array('"'), array('&quot;'), $dataItem['login']), ENT_QUOTES);
+            $arrData['login'] = $dataItem['login'];
             $arrData['id_restricted_to'] = $listeRestriction;
             $arrData['id_restricted_to_roles'] = $listRestrictionRoles;
             $arrData['tags'] = $tags;
@@ -3903,7 +3905,8 @@ switch ($inputData['type']) {
             // Prepare tree
             $arbo = $tree->getPath($inputData['id'], true);
             foreach ($arbo as $elem) {
-                if ($elem->title === $session->get('user-id') && (int) $elem->nlevel === 1) {
+                // Personnal folder
+                if ((int) $elem->title === (int) $session->get('user-id') && (int) $elem->nlevel === 1) {
                     $elem->title = $session->get('user-login');
                 }
                 // Store path elements
@@ -4180,7 +4183,8 @@ switch ($inputData['type']) {
                     MIN(n.renewal_period) AS renewal_period,
                     MIN(l.action) AS log_action,
                     l.id_user AS log_user,
-                    i.url AS link
+                    i.url AS link,
+                    i.email AS email
                     FROM ' . prefixTable('items') . ' AS i
                     INNER JOIN ' . prefixTable('nested_tree') . ' AS n ON (i.id_tree = n.id)
                     INNER JOIN ' . prefixTable('log_items') . ' AS l ON (i.id = l.id_item)
@@ -4201,7 +4205,8 @@ switch ($inputData['type']) {
                     MIN(n.renewal_period) AS renewal_period,
                     MIN(l.action) AS log_action,
                     l.id_user AS log_user,
-                    i.url AS link
+                    i.url AS link,
+                    i.email AS email
                     FROM ' . prefixTable('items') . ' AS i
                     INNER JOIN ' . prefixTable('nested_tree') . ' AS n ON (i.id_tree = n.id)
                     INNER JOIN ' . prefixTable('log_items') . ' AS l ON (i.id = l.id_item)
@@ -4296,6 +4301,7 @@ switch ($inputData['type']) {
                     $html_json[$record['id']]['is_result_of_search'] = 0;
                     $html_json[$record['id']]['is_favourited'] = in_array($record['id'], $session->get('user-favorites')) === true ? 1 : 0;
                     $html_json[$record['id']]['link'] = $record['link'];
+                    $html_json[$record['id']]['email'] = $record['email'] ?? '';
                     $html_json[$record['id']]['fa_icon'] = $record['fa_icon'];
 
                     // Possible values:
@@ -6537,7 +6543,7 @@ switch ($inputData['type']) {
                 $displayThisNode = false;
 
                 // Check if any allowed folder is part of the descendants of this node
-                $nodeDescendants = $tree->getDescendants($folder->id, true, false, true);
+                $nodeDescendants = $tree->getDescendantsFromTreeArray($folders, $folder->id);
                 foreach ($nodeDescendants as $node) {
                     // manage tree counters
                     if (
@@ -6563,15 +6569,14 @@ switch ($inputData['type']) {
                     array_push($arrayFolders, [
                         'id' => (int) $folder->id,
                         'level' => (int) $folder->nlevel,
-                        'title' => ((int) $folder->title === (int) $session->get('user-id') && (int) $folder->nlevel === 1) ? htmlspecialchars_decode($session->get('user-login')) : htmlspecialchars_decode($folder->title, ENT_QUOTES),
+                        'title' => ((int) $folder->title === (int) $session->get('user-id') && (int) $folder->nlevel === 1) ? $session->get('user-login') : $folder->title,
                         'disabled' => (
                             in_array($folder->id, $session->get('user-accessible_folders')) === false
                             || in_array($folder->id, $session->get('user-read_only_folders')) === true
-                            //|| ((int) $session->get('user-read_only') === 1 && in_array($folder->id, $session->get('user-personal_visible_folders')) === false)
                         ) ? 1 : 0,
                         'parent_id' => (int) $folder->parent_id,
                         'perso' => (int) $folder->personal_folder,
-                        'path' => $path,
+                        'path' => htmlspecialchars($path),
                         'is_visible_active' => (null !== $session->get('user-read_only_folders') && in_array($folder->id, $session->get('user-read_only_folders'))) ? 1 : 0,
                     ]);
                 }

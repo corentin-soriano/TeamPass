@@ -59,7 +59,7 @@ $request = SymfonyRequest::createFromGlobals();
 
 <script type="text/javascript">
     var userScrollPosition = 0,
-        debugJavascript = true;
+        debugJavascript = false;
     let hourInMinutes = 60;
 
 
@@ -75,6 +75,14 @@ $request = SymfonyRequest::createFromGlobals();
         if (window.history.replaceState) {
             window.history.replaceState(null, null, window.location.href);
         }
+
+        // Check theme on page load
+        applyTheme(false);
+        
+        // Switch light/dark theme button
+        $('#switch-theme').on('click', function() {
+            applyTheme(true);
+        });
     });
 
     /**
@@ -556,7 +564,7 @@ $request = SymfonyRequest::createFromGlobals();
                                 '<div class="input-group-prepend">' +
                                     '<span class="input-group-text"><?php echo $lang->get('confirm_password'); ?></span>' +
                                 '</div>' +
-                                '<input id="encryption-otp" type="password" class="form-control form-item-control" value="'+store.get('teampassUser').pwd+'">' +
+                                '<input id="encryption-otp" type="password" class="form-control form-item-control">' +
                                 '<div class="input-group-append">' +
                                     '<button class="btn btn-outline-secondary btn-no-click" id="show-encryption-otp" title="<?php echo $lang->get('mask_pw'); ?>"><i class="fa-solid fa-low-vision"></i></button>' +
                                 '</div>' +
@@ -589,6 +597,8 @@ $request = SymfonyRequest::createFromGlobals();
                     '<?php echo $lang->get('perform'); ?>',
                     '<?php echo $lang->get('close'); ?>'
                 );
+                // XSS protection
+                $('#encryption-otp').val(store.get('teampassUser').pwd);
 
                 // Manage show/hide password
                 $('#show-encryption-otp')
@@ -650,7 +660,6 @@ $request = SymfonyRequest::createFromGlobals();
                             // update the process
                             // add all tasks
                             var parameters = {
-                                'user_id': parseInt(store.get('teampassUser').user_id),
                                 'user_pwd': $('#encryption-otp').val(),
                                 'encryption_key': '',
                                 'delete_existing_keys': true,
@@ -1647,7 +1656,7 @@ $request = SymfonyRequest::createFromGlobals();
                         '<?php echo $lang->get('caution'); ?>', {
                             timeOut: 5000,
                             progressBar: true,
-                            positionClass: "toast-top-right"
+                            positionClass: "toast-bottom-right"
                         }
                     );
                     return false;
@@ -1974,7 +1983,7 @@ $request = SymfonyRequest::createFromGlobals();
         if (urlParams.get('page') === 'items') {
             // go back to list
             // Play with show and hide classes
-            $('.form-item, .form-item-action, .form-folder-action, .item-details-card, .columns-position, #item-details-card-categories, #form-item-upload-pickfilesList, #card-item-expired')
+            $('.form-item, .form-item-action, .form-folder-action, .columns-position, #item-details-card-categories, #form-item-upload-pickfilesList, #card-item-expired')
                 .addClass('hidden');
             $('#folders-tree-card').removeClass('hidden');
 
@@ -2062,5 +2071,68 @@ $request = SymfonyRequest::createFromGlobals();
                 }
             }
         );
+    }
+
+    /**
+     * Switch betwen light and dark themes.
+     * 
+     * @param {bool} switch_theme
+     */
+    function applyTheme(switch_theme) {
+        // Read actual theme (default = light)
+        let mode = $.cookie('teampass_theme') !== null ? $.cookie('teampass_theme') : 'light';
+
+        // Switch mode value if page loading
+        if (switch_theme) {
+            mode = (mode === 'dark') ? 'light' : 'dark'
+        }
+
+        if (mode === 'dark') {
+            // Meta theme-color (titlebar)
+            $('meta[name="theme-color"]').attr('content', '#343a40');
+
+            // Adminlte dark theme
+            $('body').addClass('dark-mode');
+            $('html').data('bs-theme', 'dark');
+
+            // jstree dark theme
+            $('#jstree').addClass('jstree-default-dark');
+
+            // Overload .main-header color
+            $('.main-header').removeClass('navbar-white navbar-light');
+            $('.main-header').addClass('navbar-dark');
+
+            // overload tp-action buttons
+            $('#navbarNav .tp-action').removeClass('text-navy');
+            $('#navbarNav .tp-action').addClass('text-white');
+            
+            // Overload buttons
+            $('.btn-outline-info').addClass('bg-gray-dark');
+            $('.card-header btn').addClass('bg-gray');
+        } else {
+            // Meta theme-color (titlebar)
+            $('meta[name="theme-color"]').attr('content', '#fff');
+
+            // Adminlte light theme
+            $('body').removeClass('dark-mode');
+            
+            // jstree dark theme
+            $('#jstree').removeClass('jstree-default-dark');
+            
+            // Restore .main-header default classes
+            $('.main-header').removeClass('navbar-dark');
+            $('.main-header').addClass('navbar-white navbar-light');
+            
+            // overload item-form-new-button buttons
+            $('#navbarNav .tp-action').addClass('text-navy');
+            $('#navbarNav .tp-action').removeClass('text-white');
+
+            // Overload buttons
+            $('.btn-outline-info').removeClass('bg-gray-dark');
+            $('.card-header btn').removeClass('bg-gray');
+        }
+
+        // Store new theme value
+        $.cookie('teampass_theme', mode, { expires: 365, secure: true});
     }
 </script>

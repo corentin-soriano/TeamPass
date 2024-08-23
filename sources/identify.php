@@ -87,7 +87,10 @@ echo $checkUserAccess->caseHandler();
 if ($checkUserAccess->checkSession() === false) {
     // Not allowed page
     $session->set('system-error_code', ERR_NOT_ALLOWED);
-    include $SETTINGS['cpassman_dir'] . '/error.php';
+    echo json_encode([
+        'error' => true,
+        'message' => $lang->get('error_bad_credentials'),
+    ]);
     exit;
 }
 
@@ -543,7 +546,10 @@ function identifyUser(string $sentData, array $SETTINGS): bool
             $username,
             $SETTINGS,
         );
-        $lifetime = time() + ($dataReceived['duree_session'] * 60);
+        // Avoid unlimited session.
+        $max_time = $SETTINGS['maximum_session_expiration_time'] ?? 60;
+        $session_time = $dataReceived['duree_session'] <= $max_time ? $dataReceived['duree_session'] : $max_time;
+        $lifetime = time() + ($session_time * 60);
 
         //--- Handle the session duration and ID
         //$cookieParams = session_get_cookie_params();
@@ -1310,8 +1316,7 @@ function authenticateThroughAD(string $username, array $userInfo, string $passwo
         $error = $e->getDetailedError();
         return [
             'error' => true,
-            'message' => $lang->get('error')." - ".(isset($error) === true ? $error->getErrorCode()." - ".$error->getErrorMessage(). "<br>".$error->getDiagnosticMessage() : $e),
-
+            'message' => $lang->get('error_bad_credentials'),
         ];
     }
 

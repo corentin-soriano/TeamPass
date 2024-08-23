@@ -31,7 +31,7 @@ declare(strict_types=1);
 
 ?>
 <script type="text/javascript">
-    var debugJavascript = true;
+    var debugJavascript = false;
 
     // On page load
     $(function() {
@@ -124,6 +124,14 @@ declare(strict_types=1);
             });
         }
 
+        // Relaunch authentication
+        if (($("#pw").val() !== "" || $("#login").val() !== "")) {
+            $(this).delay(500).queue(function() {
+                document.getElementById('but_identify_user').click();
+                $(this).dequeue();
+            });
+        }
+        
         // Show tooltips
         $('.infotip').tooltip();
     });
@@ -580,26 +588,25 @@ declare(strict_types=1);
             function(data) {
                 //data = prepareExchangedData(data, 'decode', "<?php echo $session->get('key'); ?>");
                 data = JSON.parse(data);
+
+                // Handle the case where the user doesn't exists.
+                if (data.error === true) {
+                    toastr.remove();
+                    toastr.error(
+                        data.message,
+                        '<?php echo $lang->get('caution'); ?>', {
+                            timeOut: 5000,
+                            progressBar: true,
+                            positionClass: "toast-bottom-right"
+                        }
+                    );
+                    return false;
+                }
+
                 if (debugJavascript === true) {
                     console.log("Recevied key "+data.key+' and local key<?php echo $session->get('key'); ?>')
                 }
                 if (data.key !== '<?php echo $session->get('key'); ?>') {
-                    // No session was found, warn user
-                    toastr.remove();
-                    toastr.error(
-                        '<?php echo $lang->get('alert_session_not_consistent'); ?>',
-                        '<?php echo $lang->get('caution'); ?>', {
-                            timeOut: 2500,
-                            progressBar: true
-                        }
-                    );
-
-                    // Delay page submit
-                    $(this).delay(1000).queue(function() {
-                        document.location.reload(true);
-                        $(this).dequeue();
-                    });
-
                     // Update session
                     store.update(
                         'teampassUser', {},
@@ -611,6 +618,9 @@ declare(strict_types=1);
                             teampassUser.page_reload = 1;
                         }
                     );
+
+                    // Reload login page.
+                    document.location.reload(true);
 
                     return false;
                 }
@@ -629,7 +639,7 @@ declare(strict_types=1);
                         '<?php echo $lang->get('caution'); ?>', {
                             timeOut: 5000,
                             progressBar: true,
-                            positionClass: "toast-top-right"
+                            positionClass: "toast-bottom-right"
                         }
                     );
                     return false;
@@ -742,7 +752,7 @@ declare(strict_types=1);
                         '<?php echo $lang->get('caution'); ?>', {
                             timeOut: 5000,
                             progressBar: true,
-                            positionClass: "toast-top-right"
+                            positionClass: "toast-bottom-right"
                         }
                     );
                     return false;
@@ -761,7 +771,7 @@ declare(strict_types=1);
                         '<?php echo $lang->get('index_maintenance_mode_admin'); ?>',
                         '<?php echo $lang->get('caution'); ?>', {
                             timeOut: 0,
-                            positionClass: "toast-top-right"
+                            positionClass: "toast-bottom-right"
                         }
                     );
                     return false;
@@ -786,7 +796,7 @@ declare(strict_types=1);
                             {
                                 timeOut: 10000,
                                 progressBar: true,
-                                positionClass: "toast-top-right"
+                                positionClass: "toast-bottom-right"
                             }
                         );
                         if(data.ga_bad_code === true)
@@ -800,7 +810,7 @@ declare(strict_types=1);
                             '<?php echo $lang->get('caution'); ?>', {
                                 timeOut: 5000,
                                 progressBar: true,
-                                positionClass: "toast-top-right"
+                                positionClass: "toast-bottom-right"
                             }
                         );
                     }

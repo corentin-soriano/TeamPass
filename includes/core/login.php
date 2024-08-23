@@ -66,7 +66,7 @@ if (isset($_GET['code']) === true && isset($_GET['state']) === true && $get['pos
 }
 
 echo '
-<body class="hold-transition login-page">
+<body class="hold-transition login-page '.$theme_body.'">
 <div class="login-box">
     <div class="login-logo"><div style="margin:30px;">',
     isset($SETTINGS['custom_logo']) === true && empty($SETTINGS['custom_logo']) === false ?
@@ -82,11 +82,11 @@ echo '
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-header text-center">
-            <h3>',
+            <p>',
     isset($SETTINGS['custom_login_text']) === true
         && empty($SETTINGS['custom_login_text']) === false ? $SETTINGS['custom_login_text'] : $lang->get('index_get_identified'),
     '
-            </h3>
+            </p>
         </div>
 
         <div class="card-body login-card-body1">

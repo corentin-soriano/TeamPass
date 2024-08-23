@@ -265,7 +265,7 @@ function passwordHandler(string $post_type, /*php8 array|null|string*/ $dataRece
         case 'test_current_user_password_is_correct'://action_password
             return isUserPasswordCorrect(
                 (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
-                (string) filter_var($dataReceived['password'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+                (string) $dataReceived['password'],
                 $SETTINGS
             );
 
@@ -478,6 +478,7 @@ function mailHandler(string $post_type, /*php8 array|null|string */$dataReceived
  */
 function keyHandler(string $post_type, /*php8 array|null|string */$dataReceived, array $SETTINGS): string
 {
+    $session = SessionManager::getSession();
     switch ($post_type) {
         /*
         * Generate a temporary encryption key for user
@@ -529,7 +530,7 @@ function keyHandler(string $post_type, /*php8 array|null|string */$dataReceived,
         case 'change_private_key_encryption_password'://action_key
             return changePrivateKeyEncryptionPassword(
                 (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
-                (string) filter_var($dataReceived['current_code'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
+                (string) $dataReceived['current_code'],
                 (string) filter_var($dataReceived['new_code'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 (string) filter_var($dataReceived['action_type'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 $SETTINGS
@@ -539,8 +540,19 @@ function keyHandler(string $post_type, /*php8 array|null|string */$dataReceived,
         * Launch user keys change on his demand
         */
         case 'user_new_keys_generation'://action_key
+
+            // Only admins can reset user password
+            if ($session->get('user-admin') === 1
+                && empty($dataReceived['user_id']) === false) {
+                // Use id requested from user if he is admin.
+                $userId = $dataReceived['user_id'];
+            } else {
+                // Use id from session if user not admin or id not sent.
+                $userId = $session->get('user-id');
+            }
+
             return handleUserKeys(
-                (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
+                (int) filter_var($userId, FILTER_SANITIZE_NUMBER_INT),
                 (string) filter_var($dataReceived['user_pwd'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
                 (int) isset($SETTINGS['maximum_number_of_items_to_treat']) === true ? $SETTINGS['maximum_number_of_items_to_treat'] : NUMBER_ITEMS_IN_BATCH,
                 (string) filter_var($dataReceived['encryption_key'], FILTER_SANITIZE_FULL_SPECIAL_CHARS),
@@ -559,7 +571,7 @@ function keyHandler(string $post_type, /*php8 array|null|string */$dataReceived,
         */
         case 'user_recovery_keys_download'://action_key
             return handleUserRecoveryKeysDownload(
-                (int) filter_var($dataReceived['user_id'], FILTER_SANITIZE_NUMBER_INT),
+                (int) $session->get('user-id'),
                 (array) $SETTINGS,
             );
 
@@ -1440,6 +1452,11 @@ function generateBugReport(
     $session = SessionManager::getSession();
     $lang = new Language($session->get('user-language') ?? 'english');
     
+    // Only administrators can see this confidential informations.
+    if ($session->get('user-admin') !== 1) {
+        http_response_code(403);
+        exit;
+    }
 
     // Read config file
     $list_of_options = '';
@@ -1716,6 +1733,19 @@ function changePrivateKeyEncryptionPassword(
             } else {
                 $privateKey = decryptPrivateKey($post_current_code, $userData['private_key']);
                 $hashedPrivateKey = encryptPrivateKey($post_new_code, $privateKey);
+            }
+
+            // Should fail here to avoid break user private key.
+            if (strlen($privateKey) === 0 || strlen($hashedPrivateKey) < 30) {
+                error_log("Error reencrypt user private key. User ID: {$post_user_id}, Given OTP: '{$post_current_code}'");
+                return prepareExchangedData(
+                    array(
+                        'error' => true,
+                        'message' => $lang->get('error_otp_secret'),
+                        'debug' => '',
+                    ),
+                    'encode'
+                );
             }
 
             // Update user account
@@ -2747,7 +2777,7 @@ function migrateTo3_DoUserPersonalItemsEncryption(
                     );
 
                     // Encrypt with Object Key
-                    $cryptedStuff = doDataEncryption($passwd['string']);
+                    $cryptedStuff = doDataEncryption(html_entity_decode($passwd['string']));
 
                     // Store new password in DB
                     DB::update(
