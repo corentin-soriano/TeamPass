@@ -1426,7 +1426,7 @@ function finalizeAuthentication(
     $passwordManager = new PasswordManager();
     
     // Migrate password if needed
-    $hashedPassword = $passwordManager->migratePassword(
+    $passwordManager->migratePassword(
         $userInfo['pw'],
         $passwordClear,
         (int) $userInfo['id']
@@ -1451,13 +1451,12 @@ function finalizeAuthentication(
         DB::update(
             prefixTable('users'),
             [
-                'pw' => $hashedPassword,
+                'pw' => $passwordManager->hashPassword($passwordClear),
             ],
             'id = %i',
             $userInfo['id']
         );
     }
-    if (WIP === true) error_log("finalizeAuthentication - hashedPassword: " . $hashedPassword. " | ".$passwordManager->verifyPassword($userInfo['pw'], $passwordClear)." || ".$passwordClear);
 }
 
 /**
