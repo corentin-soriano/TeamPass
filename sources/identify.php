@@ -1608,8 +1608,9 @@ function googleMFACheck(string $username, array $userInfo, $dataReceived, array 
             $proceedIdentification = false;
             
             // generate new QR
+            $instance = htmlspecialchars($_SERVER['SERVER_NAME']);
             $new_2fa_qr = $tfa->getQRCodeImageAsDataUri(
-                'Teampass - ' . $username,
+                'Teampass ' . $instance . ' - ' . $username,
                 $userInfo['ga']
             );
             // clear temporary code from DB
