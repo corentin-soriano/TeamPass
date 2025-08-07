@@ -660,7 +660,7 @@ if ($checkUserAccess->checkSession() === false || $checkUserAccess->userAccessPa
                             }
                         );
 
-                        download(new Blob([atob(data.content)]), "teampass_recovery_key_"+data.login+"_"+data.timestamp+".txt", "text/text");
+                        download(new Blob([atob(data.content)]), "teampass_recovery_key_"+window.location.hostname+"_"+data.login+"_"+data.timestamp+".txt", "text/text");
 
                         $("#warningModalButtonAction").addClass('hidden');
                         $('#warningModalButtonClose').removeClass('disabled');

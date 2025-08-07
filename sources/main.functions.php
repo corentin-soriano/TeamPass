@@ -4184,7 +4184,8 @@ function handleUserRecoveryKeysDownload(int $userId, array $SETTINGS):string
         $now = (int) time();
         // Prepare file content
         $export_value = file_get_contents(__DIR__."/../includes/core/teampass_ascii.txt")."\n".
-            "Generation date: ".date($SETTINGS['date_format'] . ' ' . $SETTINGS['time_format'], $now)."\n\n".
+            "Generation date: ".date($SETTINGS['date_format'] . ' ' . $SETTINGS['time_format'], $now).
+            "Instance: ". htmlspecialchars($_SERVER['SERVER_NAME']) ."\n\n".
             "RECOVERY KEYS - Not to be shared - To be store safely\n\n".
             "Public Key:\n".$session->get('user-public_key')."\n\n".
             "Private Key:\n".$session->get('user-private_key')."\n\n";
