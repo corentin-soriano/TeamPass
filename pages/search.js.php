@@ -304,7 +304,7 @@ $var['hidden_asterisk'] = '<i class="fas fa-asterisk mr-2"></i><i class="fas fa-
                     })
                     .on('success', function(e) {
                         // Warn user about clipboard clear
-                        if (store.get('teampassSettings').clipboard_life_duration === undefined || parseInt(store.get('teampassSettings').clipboard_life_duration) === 0) {
+                        if (storeSession.get('teampassSettings').clipboard_life_duration === undefined || parseInt(storeSession.get('teampassSettings').clipboard_life_duration) === 0) {
                             toastr.remove();
                             toastr.info(
                                 '<?php echo $lang->get('copy_to_clipboard'); ?>',
@@ -319,14 +319,14 @@ $var['hidden_asterisk'] = '<i class="fas fa-asterisk mr-2"></i><i class="fas fa-
                             toastr.warning(
                                 '<?php echo $lang->get('clipboard_will_be_cleared'); ?>',
                                 '', {
-                                    timeOut: store.get('teampassSettings').clipboard_life_duration * 1000,
+                                    timeOut: storeSession.get('teampassSettings').clipboard_life_duration * 1000,
                                     progressBar: true
                                 }
                             );
 
                             // Set clipboard eraser
                             clearClipboardTimeout(
-                                store.get('teampassSettings').clipboard_life_duration
+                                storeSession.get('teampassSettings').clipboard_life_duration
                             );
                         }
 
@@ -500,8 +500,8 @@ $var['hidden_asterisk'] = '<i class="fas fa-asterisk mr-2"></i><i class="fas fa-
                 if (selectedAction === 'move') {
                     // destination folder
                     var folders = '';
-                    console.log(store.get('teampassApplication').foldersList)
-                    $.each(store.get('teampassApplication').foldersList, function(index, item) {
+                    console.log(storeSession.get('teampassApplication').foldersList)
+                    $.each(storeSession.get('teampassApplication').foldersList, function(index, item) {
                         if (item.disabled === 0) {
                             folders += '<option value="' + item.id + '">' + item.title +
                                 '   [' +

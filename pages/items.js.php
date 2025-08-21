@@ -164,8 +164,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
                     return {
                         'id': node.id.split('_')[1],
-                        'force_refresh': store.get('teampassApplication') !== undefined ?
-                            store.get('teampassApplication').jstreeForceRefresh : 0
+                        'force_refresh': storeSession.get('teampassApplication') !== undefined ?
+                            storeSession.get('teampassApplication').jstreeForceRefresh : 0
                     };
                 }
             },
@@ -205,7 +205,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             console.log(selectedFolder.original.is_pf)
         }
 
-        store.update(
+        storeSession.update(
             'teampassApplication',
             function(teampassApplication) {
                 teampassApplication.selectedFolder = selectedFolderId,
@@ -218,7 +218,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 teampassApplication.userCanEdit = selectedFolder.original.can_edit
             }
         )
-        store.update(
+        storeSession.update(
             'teampassItem',
             function(teampassItem) {
                 teampassItem.folderId = selectedFolderId
@@ -275,7 +275,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         savePreviousView();
 
         // Store the folder to open
-        store.set(
+        storeSession.set(
             'teampassApplication', {
                 selectedFolder: parseInt(queryDict['group']),
                 itemsListFolderId: parseInt(queryDict['group']),
@@ -284,7 +284,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 highlightFavorites: parseInt(<?php echo $SETTINGS['highlight_favorites']; ?>)
             }
         );
-        store.update(
+        storeSession.update(
             'teampassItem',
             function(teampassItem) {
                 teampassItem.folderId = parseInt(queryDict['group'])
@@ -309,7 +309,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         refreshVisibleFolders(true);
 
         // show correct folder in Tree
-        let groupe_id = store.get('teampassApplication').itemsListFolderId;
+        let groupe_id = storeSession.get('teampassApplication').itemsListFolderId;
         if (groupe_id !== false && 
             ($('#jstree').jstree('get_selected', true)[0] === undefined ||
             'li_' + groupe_id !== $('#jstree').jstree('get_selected', true)[0].id)
@@ -322,13 +322,13 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     });
 
     // Preload list of items
-    if (store.get('teampassApplication') !== undefined &&
-        store.get('teampassApplication').selectedFolder !== undefined &&
-        store.get('teampassApplication').selectedFolder !== '' && 
+    if (storeSession.get('teampassApplication') !== undefined &&
+        storeSession.get('teampassApplication').selectedFolder !== undefined &&
+        storeSession.get('teampassApplication').selectedFolder !== '' && 
         showItemOnPageLoad === true
     ) {
         startedItemsListQuery = true;
-        ListerItems(store.get('teampassApplication').itemsListFolderId, '', 0);
+        ListerItems(storeSession.get('teampassApplication').itemsListFolderId, '', 0);
     }
 
     // Show details of item
@@ -350,7 +350,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     // Keep the scroll position
     $(window).on("scroll", function() {
         if ($('#folders-tree-card').hasClass('hidden') === false) {
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     tempScrollTop: $(window).scrollTop()
@@ -388,7 +388,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             const item_pwd = getItemPassword(
                 'at_password_shown',
                 'item_id',
-                store.get('teampassItem').id
+                storeSession.get('teampassItem').id
             );
 
             // Change class and show spinner
@@ -422,7 +422,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         // Ensure that the local storage data is consistent with what is
         // displayed on the screen.
         const item_dom_id = parseInt($('#items-details-container').data('id'));
-        const item_storage_id = parseInt(store.get('teampassItem').id);
+        const item_storage_id = parseInt(storeSession.get('teampassItem').id);
 
         // Prevent usage of items actions when local storage and DOM are out
         // of sync. Let the user create a new item or refresh data even if the
@@ -451,7 +451,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         if ($(this).data('folder-action') === 'refresh') {
             // Force refresh
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.jstreeForceRefresh = 1
@@ -462,7 +462,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             } else {
                 refreshTree();
             }
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.jstreeForceRefresh = 0
@@ -492,7 +492,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             toastr.remove();
 
             // Check privileges
-            if (store.get('teampassItem').hasAccessLevel < 20 &&
+            if (storeSession.get('teampassItem').hasAccessLevel < 20 &&
                 store.get('teampassUser').can_create_root_folder === 0
             ) {
                 toastr.error(
@@ -534,7 +534,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if (debugJavascript === true) console.info('SHOW EDIT FOLDER');
             toastr.remove();
             // Check privileges
-            if (store.get('teampassItem').hasAccessLevel < 20) {
+            if (storeSession.get('teampassItem').hasAccessLevel < 20) {
                 toastr.error(
                     '<?php echo $lang->get('error_not_allowed_to'); ?>',
                     '', {
@@ -544,7 +544,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 );
                 return false;
             }
-            if (debugJavascript === true) console.log(store.get('teampassApplication'));
+            if (debugJavascript === true) console.log(storeSession.get('teampassApplication'));
 
             // Store current view
             savePreviousView('.form-folder-add');
@@ -553,28 +553,28 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-add').removeClass('hidden');
             // Prepare some data in the form
-            $("#form-folder-add-parent option[value='" + store.get('teampassApplication').selectedFolder + "']")
+            $("#form-folder-add-parent option[value='" + storeSession.get('teampassApplication').selectedFolder + "']")
                 .prop('disabled', true);
-            $('#form-folder-add-parent').val(store.get('teampassApplication').selectedFolderParentId).change();
-            $("#form-folder-add-parent option[value='" + store.get('teampassApplication').selectedFolderParentId + "']")
+            $('#form-folder-add-parent').val(storeSession.get('teampassApplication').selectedFolderParentId).change();
+            $("#form-folder-add-parent option[value='" + storeSession.get('teampassApplication').selectedFolderParentId + "']")
                 .prop('disabled', false);
             $('#form-folder-add-label')
-                .val(store.get('teampassApplication').selectedFolderParentTitle)
+                .val(storeSession.get('teampassApplication').selectedFolderParentTitle)
                 .focus();
             // is PF 1st level
-            if (store.get('teampassApplication').selectedFolderIsPF === 1 && store.get('teampassApplication').selectedFolderParentId !== 0) {
+            if (storeSession.get('teampassApplication').selectedFolderIsPF === 1 && storeSession.get('teampassApplication').selectedFolderParentId !== 0) {
                 $('#form-folder-add-label, #form-folder-add-parent').prop('disabled', false);
-            } else if (store.get('teampassApplication').userCanEdit === 0) {
+            } else if (storeSession.get('teampassApplication').userCanEdit === 0) {
                 $('#form-folder-add-label, #form-folder-add-parent').prop('disabled', true);
             } else {
                 $('#form-folder-add-label, #form-folder-add-parent').prop('disabled', false);
             }
 
-            $('#form-folder-add-complexicity').val(store.get('teampassItem').folderComplexity).change();
+            $('#form-folder-add-complexicity').val(storeSession.get('teampassItem').folderComplexity).change();
             $('#form-folder-add-icon')
-                .val(store.get('teampassApplication').selectedFolderIcon);
+                .val(storeSession.get('teampassApplication').selectedFolderIcon);
             $('#form-folder-add-icon-selected')
-                .val(store.get('teampassApplication').selectedFolderIconSelected);
+                .val(storeSession.get('teampassApplication').selectedFolderIconSelected);
             // Set type of action for the form
             $('#form-folder-add').data('action', 'update');
 
@@ -585,7 +585,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if (debugJavascript === true) console.info('SHOW COPY FOLDER');
             toastr.remove();
             // Check privileges
-            if (store.get('teampassItem').hasAccessLevel < 20) {
+            if (storeSession.get('teampassItem').hasAccessLevel < 20) {
                 toastr.error(
                     '<?php echo $lang->get('error_not_allowed_to'); ?>',
                     '', {
@@ -603,12 +603,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('.form-item, .form-item-action, #folders-tree-card, .columns-position').addClass('hidden');
             $('.form-folder-copy').removeClass('hidden');
             // Prepare some data in the form
-            $('#form-folder-copy-source').val(store.get('teampassApplication').selectedFolder).change();
+            $('#form-folder-copy-source').val(storeSession.get('teampassApplication').selectedFolder).change();
             //$("#form-folder-copy-destination option[value='"+selectedFolder.id.split('_')[1]+"']")
             //.prop('disabled', true);
             $('#form-folder-copy-destination').val(0).change();
             $('#form-folder-copy-label')
-                .val(store.get('teampassApplication').selectedFolderTitle + ' <?php echo strtolower($lang->get('copy')); ?>')
+                .val(storeSession.get('teampassApplication').selectedFolderTitle + ' <?php echo strtolower($lang->get('copy')); ?>')
                 .focus();
 
             //
@@ -618,7 +618,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if (debugJavascript === true) console.info('SHOW DELETE FOLDER');
             toastr.remove();
             // Check privileges
-            if (store.get('teampassItem').hasAccessLevel < 30) {
+            if (storeSession.get('teampassItem').hasAccessLevel < 30) {
                 toastr.error(
                     '<?php echo $lang->get('error_not_allowed_to'); ?>',
                     '', {
@@ -637,8 +637,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('.form-folder-delete').removeClass('hidden');
 
             // Prepare some data in the form
-            console.log("> "+store.get('teampassApplication').selectedFolder);
-            $('#form-folder-delete-selection').val(store.get('teampassApplication').selectedFolder).change();
+            console.log("> "+storeSession.get('teampassApplication').selectedFolder);
+            $('#form-folder-delete-selection').val(storeSession.get('teampassApplication').selectedFolder).change();
             $('#form-folder-confirm-delete').iCheck('uncheck');
 
             //
@@ -671,7 +671,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Get some info
             $.when(
-                getPrivilegesOnItem(store.get('teampassApplication').itemsListFolderId, 0)
+                getPrivilegesOnItem(storeSession.get('teampassApplication').itemsListFolderId, 0)
             ).then(function(retData) {
                 if (debugJavascript === true) {
                     console.log('getPrivilegesOnItem 1')
@@ -691,7 +691,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     return false;
                 }
                 // If previous item was seen then clean session
-                store.update(
+                storeSession.update(
                     'teampassItem',
                     function(teampassItem) {
                         teampassItem.isNewItem = 1,
@@ -700,8 +700,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 );
 
                 // Show Visibility and minimum complexity
-                $('#card-item-visibility').html(store.get('teampassItem').itemVisibility);
-                $('#card-item-minimum-complexity').html(store.get('teampassItem').itemMinimumComplexity);
+                $('#card-item-visibility').html(storeSession.get('teampassItem').itemVisibility);
+                $('#card-item-minimum-complexity').html(storeSession.get('teampassItem').itemMinimumComplexity);
 
                 // HIde
                 $('.form-item-copy, #folders-tree-card, .columns-position, #form-item-password-options, .form-item-action, #form-item-attachments-zone')
@@ -752,9 +752,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 // Set type of action
                 $('#form-item-button-save').data('action', 'new_item');
                 // Does this folder contain Custom Fields
-                if (store.get('teampassItem').hasCustomCategories.length > 0) {
+                if (storeSession.get('teampassItem').hasCustomCategories.length > 0) {
                     $('#form-item-field').removeClass('hidden');
-                    $.each(store.get('teampassItem').hasCustomCategories, function(i, category) {
+                    $.each(storeSession.get('teampassItem').hasCustomCategories, function(i, category) {
                         $('#form-item-category-' + category).removeClass('hidden');
                     })
                 } else {
@@ -784,10 +784,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             // > END <
             //
         } else if ($(this).data('item-action') === 'edit') {
-            const item_tree_id = store.get('teampassItem').tree_id;
+            const item_tree_id = storeSession.get('teampassItem').tree_id;
             if (debugJavascript === true) console.info('SHOW EDIT ITEM');
             // Reset item
-            store.update(
+            storeSession.update(
                 'teampassItem',
                 function(teampassItem) {
                     teampassItem.otp_code_generate = false;
@@ -796,7 +796,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             
 
             // if item is ready
-            if (store.get('teampassItem').readyToUse === false) {
+            if (storeSession.get('teampassItem').readyToUse === false) {
                 toastr.remove();
                 toastr.warning(
                     '<?php echo $lang->get('item_action_not_yet_possible'); ?>',
@@ -830,7 +830,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 // Is user allowed
-                if (store.get('teampassItem').item_rights < 20) {
+                if (storeSession.get('teampassItem').item_rights < 20) {
                     toastr.remove();
                     toastr.error(
                         '<?php echo $lang->get('error_not_allowed_to'); ?>',
@@ -846,7 +846,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 savePreviousView();
 
                 // Store not a new item
-                store.update(
+                storeSession.update(
                     'teampassItem',
                     function(teampassItem) {
                         teampassItem.isNewItem = 0
@@ -867,7 +867,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if (debugJavascript === true) console.info('SHOW COPY ITEM');
 
             // if item is ready
-            if (store.get('teampassItem').readyToUse === false) {
+            if (storeSession.get('teampassItem').readyToUse === false) {
                 toastr.remove();
                 toastr.warning(
                     '<?php echo $lang->get('item_action_not_yet_possible'); ?>',
@@ -882,7 +882,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             // Store current view
             savePreviousView('.form-item-copy');
 
-            if (store.get('teampassItem').user_can_modify === 1) {
+            if (storeSession.get('teampassItem').user_can_modify === 1) {
                 // Show copy form
                 $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
                 $('.form-item-copy, .item-details-card-menu').removeClass('hidden');
@@ -906,7 +906,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             //
         } else if ($(this).data('item-action') === 'delete') {
             // if item is ready
-            if (store.get('teampassItem').readyToUse === false) {
+            if (storeSession.get('teampassItem').readyToUse === false) {
                 toastr.remove();
                 toastr.warning(
                     '<?php echo $lang->get('item_action_not_yet_possible'); ?>',
@@ -924,7 +924,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             savePreviousView('.form-item-delete');
 
             $.when(
-                checkAccess(store.get('teampassItem').id, store.get('teampassItem').folderId, <?php echo $session->get('user-id'); ?>, 'delete')
+                checkAccess(storeSession.get('teampassItem').id, storeSession.get('teampassItem').folderId, <?php echo $session->get('user-id'); ?>, 'delete')
             ).then(function(retData) {
                 // Is the user allowed?
                 if (retData.access === false || retData.delete === false) {
@@ -944,7 +944,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 if (debugJavascript === true) console.info('SHOW DELETE ITEM');
-                if (store.get('teampassItem').user_can_modify === 1) {
+                if (storeSession.get('teampassItem').user_can_modify === 1) {
                     // Show delete form
                     $('.form-item, #folders-tree-card, .form-item-action').addClass('hidden');
                     $('.form-item-delete, .item-details-card-menu').removeClass('hidden');
@@ -1019,7 +1019,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             toastr.info('<?php echo $lang->get('loading_item'); ?> ... <i class="fa-solid fa-circle-notch fa-spin fa-2x"></i>');
 
             $.when(
-                Details(store.get('teampassItem').id, 'show', true)
+                Details(storeSession.get('teampassItem').id, 'show', true)
             ).then(function() {
                 // Nothing
             });
@@ -1033,7 +1033,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Is user allowed
             var levels = [50, 70];
-            if (levels.includes(store.get('teampassItem').item_rights) === false) {
+            if (levels.includes(storeSession.get('teampassItem').item_rights) === false) {
                 toastr.remove();
                 toastr.error(
                     '<?php echo $lang->get('error_not_allowed_to'); ?>',
@@ -1058,7 +1058,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             //
         } else if ($(this).data('item-action') === 'link') {
             // Add link to clipboard.
-            navigator.clipboard.writeText("<?php echo $SETTINGS['cpassman_url'];?>/index.php?page=items&group="+store.get('teampassItem').folderId+"&id="+store.get('teampassItem').id);
+            navigator.clipboard.writeText("<?php echo $SETTINGS['cpassman_url'];?>/index.php?page=items&group="+storeSession.get('teampassItem').folderId+"&id="+storeSession.get('teampassItem').id);
 
             // Display message.
             toastr.remove();
@@ -1117,7 +1117,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if ($(this).hasClass('item-edit') === true) {
                 // release existing edition lock
                 data = {
-                    'item_id': store.get('teampassItem').id,
+                    'item_id': storeSession.get('teampassItem').id,
                     'action': 'release_lock',
                 }
                 $.post(
@@ -1131,7 +1131,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 if (userUploadedFile === true) {
                     // Do some operation such as cancel file upload
                     var data = {
-                        'item_id': store.get('teampassItem').id,
+                        'item_id': storeSession.get('teampassItem').id,
                     }
 
                     $.post(
@@ -1210,7 +1210,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         // Store current item ID
         var selectedItemId = $(this).closest('.list-item-row').data('item-id');
-        store.update(
+        storeSession.update(
             'teampassItem',
             function(teampassItem) {
                 teampassItem.id = selectedItemId;
@@ -1240,7 +1240,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         }
 
         var data = {
-            'id': store.get('teampassItem').id,
+            'id': storeSession.get('teampassItem').id,
             'email': DOMPurify.sanitize($('#form-item-request-access-reason').val()),
         }
         // NOw send the email
@@ -1302,12 +1302,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
      * Adapt the top rules of item form on change of folders
      */
     $('#form-item-folder').change(function() {
-        if ($(this).val() !== null && store.get('teampass-folders') !== undefined) {
+        if ($(this).val() !== null && storeSession.get('teampass-folders') !== undefined) {
             if (debugJavascript === true) {
                 console.log('teampass-folders');
-                console.log(store.get('teampass-folders'))
+                console.log(storeSession.get('teampass-folders'))
             }
-            var folders = JSON.parse(store.get('teampass-folders'));
+            var folders = JSON.parse(storeSession.get('teampass-folders'));
             $('#card-item-visibility').html(folders[$(this).val()].visibilityRoles);
             $('#card-item-minimum-complexity').html(folders[$(this).val()].complexity.text);
         }
@@ -1323,7 +1323,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         var data = {
             'notification_status': $('#form-item-notify-checkbox').is(':checked') === true ? 1 : 0,
-            'item_id': store.get('teampassItem').id,
+            'item_id': storeSession.get('teampassItem').id,
         }
 
         // Launch action
@@ -1396,7 +1396,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
         // Prepare data
         var data = {
-            'id': store.get('teampassItem').id,
+            'id': storeSession.get('teampassItem').id,
             'receipt': DOMPurify.sanitize($('#form-item-share-email').val()),
             'cat': 'share_this_item',
         }
@@ -1447,10 +1447,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
      */
     $('#form-item-delete-perform').click(function() {
         goDeleteItem(
-            store.get('teampassItem').id,
-            store.get('teampassItem').item_key !== undefined ? store.get('teampassItem').item_key : '',
+            storeSession.get('teampassItem').id,
+            storeSession.get('teampassItem').item_key !== undefined ? storeSession.get('teampassItem').item_key : '',
             selectedFolderId,
-            store.get('teampassItem').hasAccessLevel,
+            storeSession.get('teampassItem').hasAccessLevel,
             true
         );
     });
@@ -1528,7 +1528,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         $.post(
             'sources/items.queries.php', {
                 type: 'notify_user_on_item_change',
-                id: store.get('teampassItem').id,
+                id: storeSession.get('teampassItem').id,
                 value: $('#form-item-anyoneCanModify').is(':checked') === true ? 1 : 0,
                 key: '<?php echo $session->get('key'); ?>'
             },
@@ -1589,7 +1589,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         userUploadedFile = false;
 
         var data = {
-            'item_id': store.get('teampassItem').id,
+            'item_id': storeSession.get('teampassItem').id,
             'source_id': selectedFolderId,
             'dest_id': $('#form-item-copy-destination').val(),
             'new_label': DOMPurify.sanitize($('#form-item-copy-new-label').val()),
@@ -1686,7 +1686,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             userUploadedFile = false;
 
             var data = {
-                'item_id': store.get('teampassItem').id,
+                'item_id': storeSession.get('teampassItem').id,
                 'new_pwd': DOMPurify.sanitize($('#form-item-server-password').val()),
                 'ssh_root': DOMPurify.sanitize($('#form-item-server-login').val()),
                 'ssh_pwd': DOMPurify.sanitize($('#form-item-server-old-password').val()),
@@ -1732,7 +1732,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $.post(
                 "sources/utils.queries.php", {
                     type: "server_auto_update_password_frequency",
-                    id: store.get('teampassItem').id,
+                    id: storeSession.get('teampassItem').id,
                     freq: $('#form-item-server-cron-frequency').val(),
                     key: "<?php echo $session->get('key'); ?>"
                 },
@@ -1801,7 +1801,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             'description': DOMPurify.sanitize($('#form-item-suggestion-description').summernote('code'), {USE_PROFILES: {html: true}}),
             'comment': DOMPurify.sanitize($('#form-item-suggestion-comment').val(), {USE_PROFILES: {html: true}}),
             'folder_id': selectedFolderId,
-            'item_id': store.get('teampassItem').id
+            'item_id': storeSession.get('teampassItem').id
         }
 
         // Launch action
@@ -1956,7 +1956,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         ListerItems(data.newId, '', 0);
                     } else {
                         // Refresh tree
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.jstreeForceRefresh = 1;
@@ -1965,7 +1965,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         refreshTree(selectedFolderId, true);
                         // Refresh list of items inside the folder
                         ListerItems(selectedFolderId, '', 0);
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.jstreeForceRefresh = 0;
@@ -2245,7 +2245,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     );
                     // Reopen Item details form
                     Details(
-                        store.get('teampassItem').id,
+                        storeSession.get('teampassItem').id,
                         'show',
                         true
                     );
@@ -2262,7 +2262,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     $('#items-details-container').addClass('hidden');
 
                     // Remove selected item highlighting in list
-                    if (store.get('teampassApplication').highlightSelected === 1) {
+                    if (storeSession.get('teampassApplication').highlightSelected === 1) {
                         $('.list-item-row .list-item-description').removeClass('bg-black');
                     }
 
@@ -2323,7 +2323,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             }
 
             // Reset item
-            store.update(
+            storeSession.update(
                 'teampassItem',
                 function(teampassItem) {
                     teampassItem.otp_code_generate = false;
@@ -2543,7 +2543,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 .html('<span class="fa-stack fa-clickable item-favourite pointer infotip mr-2" title="<?php echo $lang->get('unfavorite'); ?>" data-item-id="' + data.item_id + '" data-item-favourited="1"><i class="fa-solid fa-circle fa-stack-2x"></i><i class="fa-solid fa-star fa-stack-1x fa-inverse text-warning"></i></span>');
 
                             // Remove highlighting
-                            if (store.get('teampassApplication').highlightFavorites === 1) {
+                            if (storeSession.get('teampassApplication').highlightFavorites === 1) {
                                 $('#list-item-row_' + data.item_id).addClass('bg-yellow');
                                 $('#list-item-row_' + data.item_id + ' .item-favorite-star').addClass('fa-star mr-1');
                             }
@@ -2552,7 +2552,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 .html('<span class="fa-stack fa-clickable item-favourite pointer infotip mr-2" title="<?php echo $lang->get('favorite'); ?>" data-item-id="' + data.item_id + '" data-item-favourited="0"><i class="fa-solid fa-circle fa-stack-2x"></i><i class="fa-solid fa-star fa-stack-1x fa-inverse"></i></span>');
                             
                             // Add highlighting
-                            if (store.get('teampassApplication').highlightFavorites === 1) {
+                            if (storeSession.get('teampassApplication').highlightFavorites === 1) {
                                 $('#list-item-row_' + data.item_id).removeClass('bg-yellow');
                                 $('#list-item-row_' + data.item_id + ' .item-favorite-star').removeClass('fa-star mr-1');
                             }
@@ -2612,7 +2612,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             const item_pwd = getItemPassword(
                 'at_password_shown',
                 'item_id',
-                store.get('teampassItem').id
+                storeSession.get('teampassItem').id
             );
 
             $('#card-item-pwd').text(item_pwd);
@@ -2799,8 +2799,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 $('#upload-file_' + file.id).html('<i class="fa-solid fa-file fa-sm mr-2"></i>' + htmlEncode(file.name) + '<span id="fileStatus_'+file.id+'"><i class="fa-solid fa-circle-notch fa-spin  ml-2"></i></span>');
 
                 // Get random number
-                if (store.get('teampassApplication').uploadedFileId === '') {
-                    store.update(
+                if (storeSession.get('teampassApplication').uploadedFileId === '') {
+                    storeSession.update(
                         'teampassApplication',
                         function(teampassApplication) {
                             teampassApplication.uploadedFileId = CreateRandomString(9, 'num_no_0');
@@ -2810,13 +2810,13 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                 up.setOption('multipart_params', {
                     PHPSESSID: '<?php echo $session->get('user-id'); ?>',
-                    itemId: store.get('teampassItem').id,
+                    itemId: storeSession.get('teampassItem').id,
                     type_upload: 'item_attachments',
-                    isNewItem: store.get('teampassItem').isNewItem,
-                    isPersonal: store.get('teampassItem').folderIsPersonal,
+                    isNewItem: storeSession.get('teampassItem').isNewItem,
+                    isPersonal: storeSession.get('teampassItem').folderIsPersonal,
                     edit_item: false,
-                    user_upload_token: store.get('teampassApplication').attachmentToken,
-                    randomId: store.get('teampassApplication').uploadedFileId,
+                    user_upload_token: storeSession.get('teampassApplication').attachmentToken,
+                    randomId: storeSession.get('teampassApplication').uploadedFileId,
                     files_number: $('#form-item-hidden-pickFilesNumber').val(),
                     file_size: file.size
                 });
@@ -2895,7 +2895,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     key: '<?php echo $session->get('key'); ?>'
                 },
                 function(data) {
-                    store.update(
+                    storeSession.update(
                         'teampassApplication',
                         function(teampassApplication) {
                             teampassApplication.attachmentToken = data[0].token;
@@ -3017,11 +3017,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         }
 
         // is user allowed to edit this item
-        if (typeof store.get('teampassApplication').itemsList !== 'undefined') {
-            itemsList = JSON.parse(store.get('teampassApplication').itemsList);
+        if (typeof storeSession.get('teampassApplication').itemsList !== 'undefined') {
+            itemsList = JSON.parse(storeSession.get('teampassApplication').itemsList);
         }
         if (itemsList.length > 0) {
-            userItemRight = itemsList[store.get('teampassItem').id]?.rights;
+            userItemRight = itemsList[storeSession.get('teampassItem').id]?.rights;
         }
 
         
@@ -3180,8 +3180,8 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     'folder': parseInt($('#form-item-folder').val()),
                     'email': purifyRes.arrFields['email'],
                     'fields': fields,
-                    'folder_is_personal': store.get('teampassItem').IsPersonalFolder === 1 ? 1 : 0,
-                    'id': store.get('teampassItem').id,
+                    'folder_is_personal': storeSession.get('teampassItem').IsPersonalFolder === 1 ? 1 : 0,
+                    'id': storeSession.get('teampassItem').id,
                     'label': purifyRes.arrFields['label'],
                     'login': purifyRes.arrFields['login'],
                     'pw': $('#form-item-password').val(),
@@ -3193,7 +3193,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     'to_be_deleted_after_x_views': parseInt(purifyRes.arrFields['deleteAfterShown']) > 0 ? parseInt(purifyRes.arrFields['deleteAfterShown']) : '',
                     'url': purifyRes.arrFields['url'],
                     'user_id': parseInt('<?php echo $session->get('user-id'); ?>'),
-                    'uploaded_file_id': store.get('teampassApplication').uploadedFileId === undefined ? '' : store.get('teampassApplication').uploadedFileId,
+                    'uploaded_file_id': storeSession.get('teampassApplication').uploadedFileId === undefined ? '' : storeSession.get('teampassApplication').uploadedFileId,
                     'fa_icon': purifyRes.arrFields['icon'],
                     'otp_is_enabled': $('#form-item-otp').is(':checked') ? 1 : 0,
                     'otp_phone_number': purifyRes.arrFields['otpPhoneNumber'] !== '' ? purifyRes.arrFields['otpPhoneNumber'] : '',
@@ -3205,7 +3205,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 // CLear tempo var
-                store.update(
+                storeSession.update(
                     'teampassApplication',
                     function(teampassApplication) {
                         teampassApplication.uploadedFileId = '';
@@ -3264,7 +3264,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 }
                                 // Send query to confirm attachments
                                 var data = {
-                                    'item_id': store.get('teampassItem').id,
+                                    'item_id': storeSession.get('teampassItem').id,
                                 }
                                 $.post(
                                     "sources/items.queries.php", {
@@ -3304,7 +3304,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             // Close edit form and reopen folders-tree-card with refreshed item.
                             $('.form-item, #form-item-attachments-zone').addClass('hidden');
                             $('#folders-tree-card').removeClass('hidden');
-                            item_id = store.get('teampassItem').id !== '' ? store.get('teampassItem').id : data.item_id;                         
+                            item_id = storeSession.get('teampassItem').id !== '' ? storeSession.get('teampassItem').id : data.item_id;                         
                             Details(item_id, 'show', true);
                         }
                     }
@@ -3313,7 +3313,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         } else if (userUploadedFile === true) {
             // Send query to confirm attachments
             var data = {
-                'item_id': store.get('teampassItem').id,
+                'item_id': storeSession.get('teampassItem').id,
             }
 
             $.post(
@@ -3324,7 +3324,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
             );
 
-            store.update(
+            storeSession.update(
                 'teampassItem',
                 function(teampassItem) {
                     teampassItem.isNewItem = 0
@@ -3406,17 +3406,17 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     function showItemEditForm(selectedFolderId) {
         if (debugJavascript === true) console.info('SHOW EDIT ITEM ' + selectedFolderId);
         // Reset item
-        store.update(
+        storeSession.update(
             'teampassItem',
             function(teampassItem) {
                 teampassItem.otp_code_generate = false;
             }
         );
         
-        if (store.get('teampassItem').error === true) {
+        if (storeSession.get('teampassItem').error === true) {
             toastr.remove();
             toastr.error(
-                store.get('teampassItem').message,
+                storeSession.get('teampassItem').message,
                 '', {
                     timeOut: 5000,
                     progressBar: true
@@ -3427,12 +3427,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             const item_pwd = getItemPassword(
                 'at_password_shown_edit_form',
                 'item_id',
-                store.get('teampassItem').id
+                storeSession.get('teampassItem').id
             );
             $('#form-item-password').val(item_pwd);
 
-            $('#card-item-visibility').html(store.get('teampassItem').itemVisibility);
-            $('#card-item-minimum-complexity').html(store.get('teampassItem').itemMinimumComplexity);
+            $('#card-item-visibility').html(storeSession.get('teampassItem').itemVisibility);
+            $('#card-item-minimum-complexity').html(storeSession.get('teampassItem').itemMinimumComplexity);
 
             // Set selected folder id
             $('#form-item-folder').val(selectedFolderId).change();
@@ -3457,9 +3457,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             $('#form-item-button-save').data('action', 'update_item');
 
             // Does this folder contain Custom Fields
-            if (store.get('teampassItem').hasCustomCategories.length > 0) {
+            if (storeSession.get('teampassItem').hasCustomCategories.length > 0) {
                 $('#form-item-field').removeClass('hidden');
-                $.each(store.get('teampassItem').hasCustomCategories, function(i, category) {
+                $.each(storeSession.get('teampassItem').hasCustomCategories, function(i, category) {
                     $('#form-item-category-' + category).removeClass('hidden');
                 })
             } else {
@@ -3467,9 +3467,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             }            
 
             // is user allowed to edit this item - overpass readonly folder
-            if (typeof store.get('teampassApplication').itemsList !== 'undefined') {
-                var itemsList = JSON.parse(store.get('teampassApplication').itemsList);
-                userItemRight = itemsList[store.get('teampassItem').id]?.rights;
+            if (typeof storeSession.get('teampassApplication').itemsList !== 'undefined') {
+                var itemsList = JSON.parse(storeSession.get('teampassApplication').itemsList);
+                userItemRight = itemsList[storeSession.get('teampassItem').id]?.rights;
                 if (userItemRight && userItemRight > 40 && $('#form-item-folder option:selected').attr('disabled') === 'disabled') {
                     $('#form-item-folder option:selected').removeAttr('disabled');
                 }
@@ -3488,7 +3488,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     function searchItems(criteria) {
         if (criteria !== '') {
             // stop items loading (if on-going)
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListStop = 1;
@@ -3509,7 +3509,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             // Continu the list of results
             finishingItemsFind(
                 'search_for_items',
-                $('#limited-search').is(":checked") === true ? store.get('teampassApplication').selectedFolder : false,
+                $('#limited-search').is(":checked") === true ? storeSession.get('teampassApplication').selectedFolder : false,
                 criteria,
                 0
             );
@@ -3555,7 +3555,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     finishingItemsFind(
                         'search_for_items',
                         $('#limited-search').is(":checked") === true ?
-                        store.get('teampassApplication').selectedFolder : false,
+                        storeSession.get('teampassApplication').selectedFolder : false,
                         criteria,
                         data.start
                     )
@@ -3742,7 +3742,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             }
                         });
                         // Stare the data
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.foldersList = folders;
@@ -3750,14 +3750,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         );
                     } else if (action === 'update') {
                         // Store the data
-                        var currentFoldersList = store.get('teampassApplication').foldersList;
+                        var currentFoldersList = storeSession.get('teampassApplication').foldersList;
                         $.each(currentFoldersList, function(index, item) {
                             if (item.id === parseInt(folders) && typeof data.result[folders] !== 'undefined') {
                                 currentFoldersList[index].categories = data.result[folders].categories;
                                 currentFoldersList[index].complexity = data.result[folders].complexity;
                                 currentFoldersList[index].visibilityRoles = data.result[folders].visibilityRoles;
 
-                                store.update(
+                                storeSession.update(
                                     'teampassApplication',
                                     function(teampassApplication) {
                                         foldersList = currentFoldersList;
@@ -3799,7 +3799,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             return false;
         }
 
-        if (do_refresh === true || store.get('teampassApplication').jstreeForceRefresh === 1) {
+        if (do_refresh === true || storeSession.get('teampassApplication').jstreeForceRefresh === 1) {
             $('#jstree').jstree(true).refresh();
         }
 
@@ -3836,9 +3836,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         requestRunning = true;
 
         // case where we should stop listing the items
-        if (store.get('teampassApplication') !== undefined && store.get('teampassApplication').itemsListStop === 1) {
+        if (storeSession.get('teampassApplication') !== undefined && storeSession.get('teampassApplication').itemsListStop === 1) {
             //requestRunning = false;
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListStop = 0;
@@ -3857,7 +3857,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         }
 
         // Store parameter in teampassApplication.itemsShownByQuery
-        store.update(
+        storeSession.update(
             'teampassApplication',
             function(teampassApplication) {
                 teampassApplication.itemsShownByQuery = nb_items_by_query;
@@ -3867,7 +3867,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         if (stop_listing_current_folder === 1) {
             me.data('requestRunning', false);
             // Store listing criteria
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListFolderId = parseInt(groupe_id),
@@ -3877,7 +3877,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
             );
         } else {
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListStop = 0
@@ -3899,7 +3899,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 $('#teampass_items_list, #items_folder_path').html('');
             }
 
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.selectedFolder = parseInt(groupe_id),
@@ -3927,11 +3927,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Prepare data to be sent
             var dataArray = {
-                id: store.get('teampassApplication').selectedFolder,
+                id: storeSession.get('teampassApplication').selectedFolder,
                 restricted: restricted === "" ? "" : restricted,
                 start: start !== undefined ? start : 0,
-                uniqueLoadData: store.get('teampassApplication').queryUniqueLoad !== undefined ? store.get('teampassApplication').queryUniqueLoad : "",
-                nb_items_to_display_once: store.get('teampassApplication').itemsShownByQuery,
+                uniqueLoadData: storeSession.get('teampassApplication').queryUniqueLoad !== undefined ? storeSession.get('teampassApplication').queryUniqueLoad : "",
+                nb_items_to_display_once: storeSession.get('teampassApplication').itemsShownByQuery,
             };
 
             if (debugJavascript === true) {
@@ -3982,7 +3982,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         var initialQueryData = $.parseJSON(data.uniqueLoadData);
 
                         // Update hidden variables
-                        store.update(
+                        storeSession.update(
                             'teampassItem',
                             function(teampassItem) {
                                 teampassItem.IsPersonalFolder = parseInt(data.IsPersonalFolder),
@@ -4044,7 +4044,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         });
                         clipboardForPassword.on('success', function(e) {                            
                             // Warn user about clipboard clear
-                            if (store.get('teampassSettings').clipboard_life_duration === undefined || parseInt(store.get('teampassSettings').clipboard_life_duration) === 0) {
+                            if (storeSession.get('teampassSettings').clipboard_life_duration === undefined || parseInt(storeSession.get('teampassSettings').clipboard_life_duration) === 0) {
                                 toastr.remove();
                                 toastr.info(
                                     '<?php echo $lang->get('copy_to_clipboard'); ?>',
@@ -4059,14 +4059,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 toastr.warning(
                                     '<?php echo $lang->get('clipboard_will_be_cleared'); ?>',
                                     '', {
-                                        timeOut: store.get('teampassSettings').clipboard_life_duration * 1000,
+                                        timeOut: storeSession.get('teampassSettings').clipboard_life_duration * 1000,
                                         progressBar: true
                                     }
                                 );
 
                                 // Set clipboard eraser
                                 clearClipboardTimeout(
-                                    store.get('teampassSettings').clipboard_life_duration
+                                    storeSession.get('teampassSettings').clipboard_life_duration
                                 );
                             }
 
@@ -4076,7 +4076,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#items_folder_path').html('<i class="fa-solid fa-folder-open-o"></i>&nbsp;' + rebuildPath(data.arborescence));
                     } else {
                         // Store query results
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.queryUniqueLoad = data.uniqueLoadData;
@@ -4119,7 +4119,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 '</div>')
                             .removeClass('hidden');
 
-                    } else if ((store.get('teampassApplication').userIsReadOnly === 1) //&& data.folder_requests_psk == 0
+                    } else if ((storeSession.get('teampassApplication').userIsReadOnly === 1) //&& data.folder_requests_psk == 0
                         ||
                         data.access_level === 10
                     ) {
@@ -4128,7 +4128,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#item_details_ok, #items_list').removeClass('hidden');
                         //$('#more_items').remove();
 
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.bypassComplexityOnCreation = parseInt(data.bloquer_creation_complexite);
@@ -4142,14 +4142,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                         if (data.list_to_be_continued === 'yes') {
                             //set next start for query
-                            store.update(
+                            storeSession.update(
                                 'teampassApplication',
                                 function(teampassApplication) {
                                     teampassApplication.itemsListStart = parseInt(data.next_start);
                                 }
                             );
                         } else {
-                            store.update(
+                            storeSession.update(
                                 'teampassApplication',
                                 function(teampassApplication) {
                                     teampassApplication.itemsListStart = data.list_to_be_continued;
@@ -4164,7 +4164,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#item_details_no_personal_saltkey, #item_details_nok').addClass('hidden');
                         $('#item_details_ok, #items_list').removeClass('hidden');
 
-                        store.update(
+                        storeSession.update(
                             'teampassApplication',
                             function(teampassApplication) {
                                 teampassApplication.bypassComplexityOnCreation = parseInt(data.bloquer_creation_complexite);
@@ -4179,14 +4179,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         // Prepare next iteration if needed
                         if (data.list_to_be_continued === 'yes') {
                             //set next start for query
-                            store.update(
+                            storeSession.update(
                                 'teampassApplication',
                                 function(teampassApplication) {
                                     teampassApplication.itemsListStart = parseInt(data.next_start);
                                 }
                             );
                         } else {
-                            store.update(
+                            storeSession.update(
                                 'teampassApplication',
                                 function(teampassApplication) {
                                     teampassApplication.itemsListStart = data.list_to_be_continued;
@@ -4196,7 +4196,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                             if (debugJavascript === true) {
                                 console.log('Liste complete des items')
-                                console.log(JSON.parse(store.get('teampassApplication').itemsList));
+                                console.log(JSON.parse(storeSession.get('teampassApplication').itemsList));
                             }
                         }
 
@@ -4215,12 +4215,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             prevIdForNextItem = -1;
 
         // Manage store
-        if (store.get('teampassApplication').itemsList === '' || store.get('teampassApplication').itemsList === undefined) {
+        if (storeSession.get('teampassApplication').itemsList === '' || storeSession.get('teampassApplication').itemsList === undefined) {
             var stored_datas = listOfItems;
         } else {
-            var stored_datas = String(JSON.parse(store.get('teampassApplication').itemsList)).concat(listOfItems);
+            var stored_datas = String(JSON.parse(storeSession.get('teampassApplication').itemsList)).concat(listOfItems);
         }
-        store.update(
+        storeSession.update(
             'teampassApplication',
             function(teampassApplication) {
                 teampassApplication.itemsList = JSON.stringify(stored_datas);
@@ -4282,7 +4282,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 icon_open = '<span class="fa-stack fa-clickable pointer infotip list-item-clicktoshow mr-2" title="<?php echo $lang->get('open'); ?>"><i class="fa-solid fa-circle fa-stack-2x"></i><i class="fa-solid fa-book-open-reader fa-stack-1x fa-inverse"></i></span>';
 
                 // Prepare mini icons
-                if (store.get('teampassSettings') !== undefined && parseInt(store.get('teampassSettings').copy_to_clipboard_small_icons) === 1 &&
+                if (storeSession.get('teampassSettings') !== undefined && parseInt(storeSession.get('teampassSettings').copy_to_clipboard_small_icons) === 1 &&
                     value.rights > 10
                 ) {
                     // Login icon
@@ -4306,7 +4306,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 // Prepare Favorite icon
-                if (store.get('teampassSettings') !== undefined && parseInt(store.get('teampassSettings').enable_favourites) === 1 &&
+                if (storeSession.get('teampassSettings') !== undefined && parseInt(storeSession.get('teampassSettings').enable_favourites) === 1 &&
                     value.rights > 10
                 ) {
                     if (value.is_favourited === 1) {
@@ -4322,7 +4322,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 var description = '',
                     itemLabel = '';
                 // Add username, email and url if requested
-                if (store.get('teampassSettings') !== undefined && parseInt(store.get('teampassSettings').show_item_data) === 1) {
+                if (storeSession.get('teampassSettings') !== undefined && parseInt(storeSession.get('teampassSettings').show_item_data) === 1) {
                     if (value.login !== '' || value.email !== '' || value.link !== '') {
                         itemLabel =
                             (value.login !== '' ? '<i class="fa-regular fa-circle-user mr-1 ml-2"></i>' + value.login : '') +
@@ -4338,7 +4338,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 }
 
                 $('#teampass_items_list').append(
-                    '<tr class="list-item-row' + (value.canMove === 1 ? ' is-draggable' : '') + ((store.get('teampassApplication').highlightFavorites === 1 && value.is_favourited === 1) ? ' bg-yellow' : '') + '" id="list-item-row_' + value.item_id + '" data-item-key="' + value.item_key + '" data-item-edition="' + value.open_edit + '" data-item-id="' + value.item_id + '" data-item-sk="' + value.sk + '" data-item-expired="' + value.expired + '" data-item-rights="' + value.rights + '" data-item-display="' + value.display + '" data-item-open-edit="' + value.open_edit + '" data-item-tree-id="' + value.tree_id + '" data-is-search-result="' + value.is_result_of_search + '" data-label="' + escape(value.label) + '">' +
+                    '<tr class="list-item-row' + (value.canMove === 1 ? ' is-draggable' : '') + ((storeSession.get('teampassApplication').highlightFavorites === 1 && value.is_favourited === 1) ? ' bg-yellow' : '') + '" id="list-item-row_' + value.item_id + '" data-item-key="' + value.item_key + '" data-item-edition="' + value.open_edit + '" data-item-id="' + value.item_id + '" data-item-sk="' + value.sk + '" data-item-expired="' + value.expired + '" data-item-rights="' + value.rights + '" data-item-display="' + value.display + '" data-item-open-edit="' + value.open_edit + '" data-item-tree-id="' + value.tree_id + '" data-is-search-result="' + value.is_result_of_search + '" data-label="' + escape(value.label) + '">' +
                     '<td class="list-item-description px-3 py-0 align-middle d-flex">' +
                     '<span class="icon-container">' +
                     // Show user a grippy bar to move item
@@ -4354,7 +4354,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     '<span class="list-item-clicktoshow d-inline-flex' + (value.rights === 10 ? '' : ' pointer') + '" data-item-id="' + value.item_id + '" data-item-key="' + value.item_key + '">' +
                     // Show item fa_icon if set
                     (value.fa_icon !== '' ? '<i class="'+value.fa_icon+' mr-1 user-fa-icon"></i>' : '') +
-                    '<span class="list-item-row-description d-inline-block' + (value.rights === 10 ? ' font-weight-light' : '') + '"><i class="item-favorite-star fa-solid' + ((store.get('teampassApplication').highlightFavorites === 1 && value.is_favourited === 1) ? ' fa-star mr-1' : '') + '"></i>' + value.label + '</span>' + (value.rights === 10 ? '' : description) +
+                    '<span class="list-item-row-description d-inline-block' + (value.rights === 10 ? ' font-weight-light' : '') + '"><i class="item-favorite-star fa-solid' + ((storeSession.get('teampassApplication').highlightFavorites === 1 && value.is_favourited === 1) ? ' fa-star mr-1' : '') + '"></i>' + value.label + '</span>' + (value.rights === 10 ? '' : description) +
                     '<span class="list-item-row-description-extend"></span>' +
                     '</span>' +
                     '<span class="list-item-actions hidden">' +
@@ -4400,19 +4400,19 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             if (debugJavascript === true) console.log($(this).data('tree-id'))
 
             // Prepare
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListFolderId = parseInt($(this).data('tree-id'));
                 }
             );
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.selectedFolder = parseInt($(this).data('tree-id'));
                 }
             );
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListStart = 0;
@@ -4457,11 +4457,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         stop_proceeding = stop_proceeding || '';
 
         if (stop_proceeding === '1' ||
-            (store.get('teampassApplication').itemsListFolderId !== '' &&
-                store.get('teampassApplication').itemsListStart !== 'end')
+            (storeSession.get('teampassApplication').itemsListFolderId !== '' &&
+                storeSession.get('teampassApplication').itemsListStart !== 'end')
         ) {
             // Clear storage
-            store.update(
+            storeSession.update(
                 'teampassApplication',
                 function(teampassApplication) {
                     teampassApplication.itemsListStop = 0;
@@ -4469,21 +4469,21 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             );
             // Perform listing
             ListerItems(
-                store.get('teampassApplication').itemsListFolderId,
-                store.get('teampassApplication').itemsListRestricted,
-                store.get('teampassApplication').itemsListStart,
-                store.get('teampassApplication').itemsListStop
+                storeSession.get('teampassApplication').itemsListFolderId,
+                storeSession.get('teampassApplication').itemsListRestricted,
+                storeSession.get('teampassApplication').itemsListStart,
+                storeSession.get('teampassApplication').itemsListStop
             );
             return false;
         }
 
-        if (store.get('teampassApplication').itemsListStart !== 'end') {
+        if (storeSession.get('teampassApplication').itemsListStart !== 'end') {
             //Check if nb of items do display > to 0
-            if (store.get('teampassApplication').itemsShownByQuery > 0) {
+            if (storeSession.get('teampassApplication').itemsShownByQuery > 0) {
                 ListerItems(
-                    store.get('teampassApplication').selectedFolder,
+                    storeSession.get('teampassApplication').selectedFolder,
                     '',
-                    store.get('teampassApplication').itemsListStart
+                    storeSession.get('teampassApplication').itemsListStart
                 );
             }
         } else {
@@ -4492,7 +4492,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Update silently the info about the folder
             refreshFoldersInfo(
-                store.get('teampassApplication').selectedFolder,
+                storeSession.get('teampassApplication').selectedFolder,
                 'update'
             );
             toastr.remove();
@@ -4572,7 +4572,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
         } else {
             var itemId = itemDefinition || '';
             var itemKey = itemDefinition || '';
-            var itemTreeId = store.get('teampassApplication').selectedFolder || '';
+            var itemTreeId = storeSession.get('teampassApplication').selectedFolder || '';
             var itemSk = 0;
             var itemExpired = '';
             var itemRestricted = '';
@@ -4666,14 +4666,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             }
 
             // If opening new item, reinit hidden fields
-            if (store.get('teampassApplication').lastItemSeen !== itemId) {
-                store.update(
+            if (storeSession.get('teampassApplication').lastItemSeen !== itemId) {
+                storeSession.update(
                     'teampassApplication',
                     function(teampassApplication) {
                         teampassApplication.lastItemSeen = parseInt(itemId);
                     }
                 );
-                if (debugJavascript === true) console.log("Last seen item " + store.get('teampassApplication').lastItemSeen)
+                if (debugJavascript === true) console.log("Last seen item " + storeSession.get('teampassApplication').lastItemSeen)
             }
 
             // do
@@ -4686,7 +4686,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 'salt_key_required': itemSk,
                 'expired_item': itemExpired,
                 'restricted': itemRestricted,
-                'folder_access_level': store.get('teampassItem').hasAccessLevel,
+                'folder_access_level': storeSession.get('teampassItem').hasAccessLevel,
                 'page': 'items',
                 'rights': itemRights,
             };
@@ -4713,7 +4713,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
 
                     // Store not a new item
-                    store.update(
+                    storeSession.update(
                         'teampassItem',
                         function(teampassItem) {
                             teampassItem.isNewItem = 0
@@ -4831,11 +4831,11 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
 
                     // Show header info
-                    $('#card-item-visibility').html(store.get('teampassItem').itemVisibility);
-                    $('#card-item-minimum-complexity').html(store.get('teampassItem').itemMinimumComplexity);
+                    $('#card-item-visibility').html(storeSession.get('teampassItem').itemVisibility);
+                    $('#card-item-minimum-complexity').html(storeSession.get('teampassItem').itemMinimumComplexity);
 
                     // Hide NEW button in case access_level <span 30
-                    if (store.get('teampassItem').hasAccessLevel === 10) {
+                    if (storeSession.get('teampassItem').hasAccessLevel === 10) {
                         $('#item-form-new-button').addClass('hidden');
                     } else {
                         $('#item-form-new-button').removeClass('hidden');
@@ -4847,7 +4847,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
 
                     // Update hidden variables
-                    store.update(
+                    storeSession.update(
                         'teampassItem',
                         function(teampassItem) {
                             teampassItem.id = parseInt(data.id),
@@ -4869,7 +4869,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('.form-item').addClass('hidden');
 
                         // Highlight selected item in list
-                        if (store.get('teampassApplication').highlightSelected === 1) {
+                        if (storeSession.get('teampassApplication').highlightSelected === 1) {
                             $('.list-item-row .list-item-description').removeClass('bg-black');
                             $('#list-item-row_' + data.id + ' .list-item-description').addClass('bg-black');
                         }
@@ -5142,14 +5142,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     // Handle the fact that KEYS may not yet be ready for this user
                     if (data.item_ready === false) {
                         $('#card-item-label').after('<i class="fa-solid fa-bell fa-shake fa-lg infotip ml-4 text-warning delete-after-usage" title="<?php echo $lang->get('sharekey_not_ready'); ?>"></i>');
-                        store.update(
+                        storeSession.update(
                             'teampassItem',
                             function(teampassItem) {
                                 teampassItem.readyToUse = false
                             }
                         );
                     } else {
-                        store.update(
+                        storeSession.update(
                             'teampassItem',
                             function(teampassItem) {
                                 teampassItem.readyToUse = true
@@ -5189,7 +5189,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                     }
 
                     // Prepare clipboard - COPY PASSWORD
-                    if (data.pw_length > 0 && store.get('teampassItem').readyToUse === true) {
+                    if (data.pw_length > 0 && storeSession.get('teampassItem').readyToUse === true) {
                         // Delete existing clipboard
                         if (clipboardForPasswordListItems) {
                             clipboardForPasswordListItems.destroy();
@@ -5209,7 +5209,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             })
                             .on('success', function(e) {
                                 // Warn user about clipboard clear
-                                if (store.get('teampassSettings').clipboard_life_duration === undefined || parseInt(store.get('teampassSettings').clipboard_life_duration) === 0) {
+                                if (storeSession.get('teampassSettings').clipboard_life_duration === undefined || parseInt(storeSession.get('teampassSettings').clipboard_life_duration) === 0) {
                                     toastr.remove();
                                     toastr.info(
                                         '<?php echo $lang->get('copy_to_clipboard'); ?>',
@@ -5223,14 +5223,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                     toastr.warning(
                                         '<?php echo $lang->get('clipboard_will_be_cleared'); ?>',
                                         '', {
-                                            timeOut: store.get('teampassSettings').clipboard_life_duration * 1000,
+                                            timeOut: storeSession.get('teampassSettings').clipboard_life_duration * 1000,
                                             progressBar: true
                                         }
                                     );
 
                                     // Set clipboard eraser
                                     clearClipboardTimeout(
-                                        store.get('teampassSettings').clipboard_life_duration
+                                        storeSession.get('teampassSettings').clipboard_life_duration
                                     );
                                 }
 
@@ -5476,12 +5476,12 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                 // Show restrictions with Badges
                 var html_restrictions = '';
-                $.each(store.get('teampassItem').id_restricted_to, function(i, value) {
+                $.each(storeSession.get('teampassItem').id_restricted_to, function(i, value) {
                     html_restrictions +='<span class="badge badge-info mr-2 mb-1"><i class="fa-solid fa-group fa-sm mr-1"></i>' +
                         data.users_list.find(x => x.id === parseInt(value)).name + '</span>';
                 }); 
                         
-                $.each(store.get('teampassItem').id_restricted_to_roles, function(i, value) {                   
+                $.each(storeSession.get('teampassItem').id_restricted_to_roles, function(i, value) {                   
                     const role = data.roles_list.find(x => x.id === parseInt(value));
                     html_restrictions += (role ? '<span class="badge badge-info mr-2 mb-1"><i class="fa-solid fa-group fa-sm mr-1"></i>' + role.title  + '</span>' : '');
                 });     
@@ -5519,7 +5519,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                 // Now load History
                 if (actionType === 'show') {
-                    loadItemHistory(store.get('teampassItem').id);
+                    loadItemHistory(storeSession.get('teampassItem').id);
                 } else if (actionType === 'edit') {
                     $.when(
                         getPrivilegesOnItem(selectedFolderId, 1)
@@ -5587,7 +5587,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                 // Delete inputs related files uploaded but not confirmed
                 var data = {
-                    'item_id': store.get('teampassItem').id,
+                    'item_id': storeSession.get('teampassItem').id,
                 }
 
                 $.post(
@@ -5608,7 +5608,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 );
 
                 // Load OTP stuff
-                store.update(
+                storeSession.update(
                     'teampassItem',
                     function(teampassItem) {
                         teampassItem.otp_code_generate = true
@@ -5622,7 +5622,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
     };
 
     function showOTPCode(id) {
-        if (store.get('teampassItem').otp_code_generate === false) {
+        if (storeSession.get('teampassItem').otp_code_generate === false) {
             clearInterval(intervalId);
             return false;
         }
@@ -5723,7 +5723,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
             // Insert new entry
             var data = {
-                'item_id': store.get('teampassItem').id,
+                'item_id': storeSession.get('teampassItem').id,
                 'label': DOMPurify.sanitize($('#form-item-history-label').val()),
                 'date': DOMPurify.sanitize($('#form-item-history-date').val()),
                 'time': DOMPurify.sanitize($('#form-item-history-time').val()),
@@ -5811,19 +5811,19 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
     // Handle quick add button for History and Attachments
     /*$(document).on('click', '#add-item-attachment', function() {
-        if ($(this).next().hasClass('hidden') === true && store.get('teampassItem').user_can_modify === 1) {
+        if ($(this).next().hasClass('hidden') === true && storeSession.get('teampassItem').user_can_modify === 1) {
             $(this).next().removeClass('hidden');
         } else {
             $(this).next().addClass('hidden');
         }
     });*/
     $(document).on('click', '#add-item-history', function() {
-        if ($(this).next().hasClass('hidden') === true && store.get('teampassItem').user_can_modify === 1) {
-            if (parseInt(store.get('teampassSettings').insert_manual_entry_item_history) === 1) {
+        if ($(this).next().hasClass('hidden') === true && storeSession.get('teampassItem').user_can_modify === 1) {
+            if (parseInt(storeSession.get('teampassSettings').insert_manual_entry_item_history) === 1) {
                 $(this).next().removeClass('hidden');
             }
         } else {
-            if (parseInt(store.get('teampassSettings').insert_manual_entry_item_history) === 1) {
+            if (parseInt(storeSession.get('teampassSettings').insert_manual_entry_item_history) === 1) {
                 $(this).next().addClass('hidden');
             }
         }
@@ -5874,7 +5874,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                 // Insert new entry
                 var data = {
-                    'item_id': store.get('teampassItem').id,
+                    'item_id': storeSession.get('teampassItem').id,
                     'label': DOMPurify.sanitize($('#warningModal #add-history-label').val()),
                     'date': DOMPurify.sanitize($('#warningModal #add-history-date').val()),
                     'time': DOMPurify.sanitize($('#warningModal #add-history-time').val()),
@@ -5891,7 +5891,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         $('#warningModal .history').val('');
 
                         // Reload history
-                        loadItemHistory(store.get('teampassItem').id);
+                        loadItemHistory(storeSession.get('teampassItem').id);
 
                         // Inform user
                         toastr.info(
@@ -6096,7 +6096,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
      */
     function prepareOneTimeView() {
         var data = {
-            "id": store.get('teampassItem').id,
+            "id": storeSession.get('teampassItem').id,
             "days": $('#form-item-otv-days').val(),
             "views": $('#form-item-otv-views').val(),
         };
@@ -6231,7 +6231,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
             }
 
             $.when(
-                checkAccess(store.get('teampassItem').id, val, <?php echo $session->get('user-id'); ?>, 'edit')
+                checkAccess(storeSession.get('teampassItem').id, val, <?php echo $session->get('user-id'); ?>, 'edit')
             ).then(function(retData) {
                 // is there an error?
                 if (retData.error === true) {
@@ -6284,7 +6284,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                         type: "get_complixity_level",
                         folder_id: val,
                         context: context,
-                        item_id: store.get('teampassItem').id,
+                        item_id: storeSession.get('teampassItem').id,
                         key: '<?php echo $session->get('key'); ?>'
                     },
                     function(data) {
@@ -6345,14 +6345,14 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                                 .change();
 
                             // If restricted to Users then select them
-                            if (store.get('teampassItem').id_restricted_to !== undefined) {
+                            if (storeSession.get('teampassItem').id_restricted_to !== undefined) {
                                 $('#form-item-restrictedto')
-                                    .val(store.get('teampassItem').id_restricted_to)
+                                    .val(storeSession.get('teampassItem').id_restricted_to)
                                     .trigger('change');
                             }
                         }
 
-                        store.update(
+                        storeSession.update(
                             'teampassItem',
                             function(teampassItem) {
                                 teampassItem.folderId = val,
@@ -6368,7 +6368,7 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                             }
                         );
                         //if (debugJavascript === true) console.log('Content of teampassItem;')
-                        //if (debugJavascript === true) console.log(store.get('teampassItem'))
+                        //if (debugJavascript === true) console.log(storeSession.get('teampassItem'))
                         resolve({
                             "error": data.error === undefined ? '' : data.error,
                             "message": data.message === undefined ? '' : data.message,
@@ -6472,9 +6472,9 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
      */
     function scrollBackToPosition() {
         // Scroll back to position
-        if (store.get('teampassApplication').tempScrollTop > 0) {
+        if (storeSession.get('teampassApplication').tempScrollTop > 0) {
             window.scrollTo({
-                top: store.get('teampassApplication').tempScrollTop
+                top: storeSession.get('teampassApplication').tempScrollTop
             });
         }
     }

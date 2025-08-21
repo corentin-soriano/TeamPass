@@ -244,7 +244,7 @@ $request = SymfonyRequest::createFromGlobals();
                     }
                 );
             }).then(function() {
-                if (store.get('teampassSettings') === undefined || parseInt(store.get('teampassSettings').enable_tasks_manager) === 0) {
+                if (storeSession.get('teampassSettings') === undefined || parseInt(storeSession.get('teampassSettings').enable_tasks_manager) === 0) {
                     if (debugJavascript === true) {
                         console.log('Now sending emails');
                     }
@@ -497,7 +497,7 @@ $request = SymfonyRequest::createFromGlobals();
                                 progressBar: true
                             }
                         );
-                    } else if (parseInt($('#profile-password-complex').val()) >= parseInt(store.get('teampassSettings').personal_saltkey_security_level)) {
+                    } else if (parseInt($('#profile-password-complex').val()) >= parseInt(storeSession.get('teampassSettings').personal_saltkey_security_level)) {
                         $('#button_do_user_change_password').removeClass('hidden');
                         $('#button_do_pwds_checks').remove();
                         toastr.remove();
@@ -1195,7 +1195,7 @@ $request = SymfonyRequest::createFromGlobals();
                         // SHow form
                         $('#dialog-admin-change-user-password').addClass('hidden');
 
-                        store.set(
+                        storeSession.set(
                             'teampassUser', {
                                 admin_user_password: '',
                                 admin_user_email: '',
@@ -1615,7 +1615,7 @@ $request = SymfonyRequest::createFromGlobals();
 
                     store.remove("teampassSettings");
 
-                    store.update(
+                    storeSession.update(
                         'teampassSettings', {},
                         function(teampassSettings) {
                             $.each(data, function(key, value) {
