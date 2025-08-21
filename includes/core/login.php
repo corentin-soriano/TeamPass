@@ -161,15 +161,6 @@ if (! (isset($SETTINGS['enable_http_request_login']) === true
         </div>';
 }
 
-echo '
-        <div class="input-group has-feedback mb-2">
-            <div class="input-group-prepend infotip" title="' . $lang->get('session_expiration_in_minutes') . '">
-                <span class="input-group-text"><i class="fa-solid fa-clock fa-fw"></i></span>
-            </div>
-            <input type="text" id="session_duration" class="form-control submit-button" 
-            placeholder="' . $lang->get('index_session_duration') .'&nbsp;(' . $lang->get('minutes') . ')" 
-            value="', isset($SETTINGS['default_session_expiration_time']) === true ? $SETTINGS['default_session_expiration_time'] : '', '">
-        </div>';
 // 2FA auth selector
 $mfaHtmlPart = '
         <input type="hidden" id="2fa_user_selection" value="'.htmlspecialchars((isset($get['post_type']) === true && $get['post_type'] === 'duo') ? 'duo' : ''). '">
