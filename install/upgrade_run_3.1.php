@@ -671,6 +671,18 @@ try {
     mysqli_rollback($db_link);
 }
 
+mysqli_query(
+    $db_link,
+    "CREATE TABLE IF NOT EXISTS `" . $pre . "temp_accounts` (
+        `id` int NOT null AUTO_INCREMENT,
+        `user_id` int NOT NULL UNIQUE,
+        `otp` varchar(64) NOT NULL UNIQUE,
+        `exp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        FOREIGN KEY (`user_id`) REFERENCES teampass_users(`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    );"
+);
+
 // Save timestamp
 $tmp = mysqli_num_rows(mysqli_query($db_link, "SELECT * FROM `" . $pre . "misc` WHERE type = 'admin' AND intitule = 'upgrade_timestamp'"));
 if (intval($tmp) === 0) {

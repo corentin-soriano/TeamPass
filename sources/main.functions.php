@@ -4448,7 +4448,7 @@ function isPasswordStrong($password) {
     $userHash = DB::queryFirstRow(
         "SELECT pw FROM " . prefixtable('users') . " WHERE id = %d;",
         $session->get('user-id')
-    )['pw'];
+    )['pw'] ?? '';
 
     $passwordManager = new PasswordManager();
     
