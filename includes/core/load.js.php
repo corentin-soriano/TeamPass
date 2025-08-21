@@ -1613,7 +1613,7 @@ $request = SymfonyRequest::createFromGlobals();
                     // except sensitive data
                     var sensitiveData = ['ldap_hosts','ldap_username','ldap_password','ldap_bdn','email','bck_script_passkey'];
 
-                    store.remove("teampassSettings");
+                    storeSession.remove("teampassSettings");
 
                     storeSession.update(
                         'teampassSettings', {},

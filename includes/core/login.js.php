@@ -605,8 +605,8 @@ declare(strict_types=1);
         }
 
         // Clear localstorage
-        store.remove('teampassApplication');
-        store.remove('teampassSettings');
+        storeSession.remove('teampassApplication');
+        storeSession.remove('teampassSettings');
         store.remove('teampassUser');
         storeSession.remove('teampassItem');
 
