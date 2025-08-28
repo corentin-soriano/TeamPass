@@ -94,7 +94,7 @@ class ClassMap implements \Countable
 
         $ambiguousClasses = [];
         foreach ($this->ambiguousClasses as $class => $paths) {
-            $paths = array_filter($paths, function ($path) use ($duplicatesFilter) {
+            $paths = array_filter($paths, function ($path) use ($duplicatesFilter): bool {
                 return !Preg::isMatch($duplicatesFilter, strtr($path, '\\', '/'));
             });
             if (\count($paths) > 0) {
@@ -175,5 +175,17 @@ class ClassMap implements \Countable
     public function count(): int
     {
         return \count($this->map);
+    }
+
+    /**
+     * Get the raw psr violations
+     *
+     * This is a map of filepath to an associative array of the warning string
+     * and the offending class name.
+     * @return array<string, array<array{warning: string, className: string}>>
+     */
+    public function getRawPsrViolations(): array
+    {
+        return $this->psrViolations;
     }
 }
