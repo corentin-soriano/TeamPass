@@ -410,6 +410,7 @@ function identifyUser(string $sentData, array $SETTINGS): bool
     // This in order to allow admin by default to connect even if LDAP is activated
     if (canUserGetLog(
             $SETTINGS,
+            $userInfo,
             (int) $userInfo['disabled'],
             $username,
             $userLdap['ldapConnection']
@@ -886,12 +887,22 @@ function handleLoginAttempts(
  */
 function canUserGetLog(
     $SETTINGS,
+    $userInfo,
     $userInfoDisabled,
     $username,
     $ldapConnection
 ) : bool
 {
     include_once $SETTINGS['cpassman_dir'] . '/sources/main.functions.php';
+
+    // Do not allow login with an account not associated with SSO email
+    // OIDC_CLAIM_upn is the user's email address known to the SSO, exposed by
+    // the proxy 
+    if ($userInfo['auth_type'] === 'local' &&
+        !empty($_SERVER['OIDC_CLAIM_upn']) &&
+        strcasecmp($userInfo['email'], $_SERVER['OIDC_CLAIM_upn'])) {
+            return false;
+    }
 
     if ((int) $userInfoDisabled === 1) {
         return false;
