@@ -777,7 +777,7 @@ if ((null === $session->get('user-validite_pw') || empty($session->get('user-val
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-primary" id="dialog-user-change-password-do"><?php echo $lang->get('launch'); ?></button>
-                        <button class="btn btn-default float-right" id="dialog-user-change-password-close"><?php echo $lang->get('close'); ?></button>
+                        <button class="btn btn-default float-right d-none" id="dialog-user-change-password-close"><?php echo $lang->get('close'); ?></button>
                     </div>
                 </div>
                 <!-- /.USER CHANGE AUTH PASSWORD -->
