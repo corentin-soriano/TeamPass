@@ -311,6 +311,15 @@
 	padding-top: 10px;
 }
 
+label[for="limited-search"] {
+    font-weight: normal !important;
+}
+
+label[for="limited-search"].active {
+    background-color: #009ae7 !important;
+    border-color: #0078b4 !important;
+}
+
 /* Some issues with background-image on buttons in 
  * dark mode and it's not particularly pretty. */
 .btn {

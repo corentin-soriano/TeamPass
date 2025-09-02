@@ -985,21 +985,19 @@ foreach ($rows as $reccord) {
                                 </div>
                             </div>
                             <div class="col text-right">
-                                <div class="input-group input-group-sm">
+                                <div class="input-group input-group-sm form-check form-switch m-auto">
                                     <input type="text" class="form-control" placeholder="<?php echo $lang->get('find'); ?>" id="find_items">
                                     <div class="input-group-append">
-                                        <div class="btn btn-primary" id="find_items_button">
-                                            <i class="fa-solid fa-search"></i>
-                                        </div>
-                                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <div class="dropdown-menu">
-                                            <div class="dropdown-item">
-                                                <input type="checkbox" class=" mr-2" id="limited-search">
-                                                <label class="form-check-label" for="limited-search"><?php echo $lang->get('limited_search'); ?></label>
-                                            </div>
-                                        </div>
+
+                                    <input type="checkbox" class="btn-check d-none"
+                                           id="limited-search" autocomplete="off">
+                                    <label class="btn btn-primary" for="limited-search">
+                                        <?php echo $lang->get('limited_search'); ?>
+                                    </label>
+
+                                    <div class="btn btn-primary d-flex align-items-center" id="find_items_button">
+                                        <i class="fa-solid fa-search"></i>
+                                    </div>
                                     </div>
                                 </div>
                             </div>

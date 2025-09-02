@@ -373,6 +373,10 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
     // Prepare some UI elements
     $('#limited-search').prop('checked', <?php echo (int) $SETTINGS['limited_search_default'] === 1 ? true : false; ?>);
+    $('label[for="limited-search"]').toggleClass('active', this.checked);
+    $('#limited-search').on('change', function() {
+        $('label[for="limited-search"]').toggleClass('active', this.checked);
+    });
 
     $(document).on('blur', '#form-item-icon', function() {
         $('#form-item-icon-show').html('<i class="fas '+$(this).val()+'"></i>');
@@ -3392,16 +3396,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
                 return false;
             }
         });
-
-    // Warn in case of limited search
-    $(document).on('click', '#limited-search', function() {
-        if ($(this).is(":checked") !== <?php echo (int) $SETTINGS['limited_search_default'] === 1 ? 'true' : 'false'; ?>) {
-            $('#find_items').addClass('bg-red');
-        } else {
-            $('#find_items').removeClass('bg-red');
-        }
-    });
-
 
     function showItemEditForm(selectedFolderId) {
         if (debugJavascript === true) console.info('SHOW EDIT ITEM ' + selectedFolderId);
