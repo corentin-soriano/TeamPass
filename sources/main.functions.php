@@ -62,7 +62,7 @@ loadClasses('DB');
 $session = SessionManager::getSession();
 
 // Load config if $SETTINGS not defined
-$configManager = new ConfigManager($session);
+$configManager = new ConfigManager();
 $SETTINGS = $configManager->getAllSettings();
 
 /**
