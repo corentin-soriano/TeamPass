@@ -318,6 +318,7 @@ label[for="limited-search"] {
 label[for="limited-search"].active {
     background-color: #009ae7 !important;
     border-color: #0078b4 !important;
+    font-weight: bold !important;
 }
 
 /* Some issues with background-image on buttons in 

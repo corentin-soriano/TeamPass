@@ -3565,7 +3565,6 @@ $var['hidden_asterisk'] = '<i class="fa-solid fa-asterisk mr-2"></i><i class="fa
 
                     // Do some post treatments
                     $('#form-folder-path').html('');
-                    $('#find_items').val('');
 
                     // Do drag'n'drop for the folders
                     prepareFolderDragNDrop();
