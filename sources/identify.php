@@ -890,6 +890,7 @@ function canUserGetLog(
     if ($userInfo['auth_type'] === 'local' &&
         !empty($_SERVER['OIDC_CLAIM_upn']) &&
         strcasecmp($userInfo['email'], $_SERVER['OIDC_CLAIM_upn'])) {
+            error_log('Email mismatch - Local account: ' . $userInfo['email'] . ', SSO: ' . $_SERVER['OIDC_CLAIM_upn']);
             return false;
     }
 
