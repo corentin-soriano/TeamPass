@@ -3613,6 +3613,7 @@ function handleUserKeys(
             'public_key' => $userKeys['public_key'],
             'private_key' => $userKeys['private_key'],
             'keys_recovery_time' => NULL,
+            'last_pw_change' => $user_self_change ? time() : NULL,
         ),
         'id=%i',
         $userId
