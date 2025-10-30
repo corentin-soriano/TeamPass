@@ -362,9 +362,6 @@ function identifyUser(string $sentData, array $SETTINGS): bool
             );
             return false;
         } elseif ($userMfa['mfaQRCodeInfos'] === true) {
-            // Add failed authentication log
-            addFailedAuthentication($username, getClientIpServer());
-
             // Case where user has initiated Google Auth
             // Return QR code
             echo prepareExchangedData(
