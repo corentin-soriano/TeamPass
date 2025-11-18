@@ -28,7 +28,7 @@
 
 define('TP_VERSION', '3.2');
 define("UPGRADE_MIN_DATE", "1732981987");
-define('TP_VERSION_MINOR', '0-RC10');
+define('TP_VERSION_MINOR', '0');
 define('TP_TOOL_NAME', 'Teampass');
 define('TP_ONE_DAY_SECONDS', 86400);
 define('TP_ONE_WEEK_SECONDS', 604800);
