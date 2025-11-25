@@ -977,14 +977,14 @@ foreach ($rows as $reccord) {
                 <div class="card-header">
                     <div class="card-title w-100">
                         <div class="row">
-                            <div class="col">
+                            <div class="col btn-new-item">
                                 <div class="btn-group" id="btn-new-item">
                                     <button type="button" class="btn btn-primary btn-sm tp-action" data-item-action="new">
                                         <i class="fa-solid fa-plus mr-2"></i><?php echo $lang->get('new_item'); ?>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col text-right custom-control custom-switch">
+                            <div class="col item-search text-right custom-control custom-switch">
                                 <div class="input-group input-group-sm form-check form-switch m-auto">
                                     <input type="text" class="form-control" placeholder="<?php echo $lang->get('find'); ?>" id="find_items">
                                     <div class="input-group-append">

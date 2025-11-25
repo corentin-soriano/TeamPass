@@ -350,3 +350,17 @@ label[for="limited-search"]::after {
 .dark-mode {
     scrollbar-color: #3b3b3b #555;
 }
+
+.col.btn-new-item {
+    flex-basis: 0;
+}
+.col.item-search {
+    flex-basis: 70%;
+    padding-left: 0;
+}
+.col.item-search .input-group {
+    padding-left: 0;
+}
+.col.item-search .input-group #find_items {
+    min-width: 50px;
+}
