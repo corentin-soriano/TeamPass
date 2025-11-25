@@ -33,25 +33,6 @@ use TeampassClasses\SessionManager\SessionManager;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use TeampassClasses\Language\Language;
 
-// Is maintenance on-going?
-if (
-    isset($SETTINGS['maintenance_mode']) === true
-    && (int) $SETTINGS['maintenance_mode'] === 1
-    && ($session_user_admin === null
-        || (int) $session_user_admin === 1)
-) {
-    ?>
-    <script type="text/javascript">
-        toastr.remove();
-        toastr.info(
-            '<?php echo $lang->get('index_maintenance_mode_admin'); ?>',
-            '<?php echo $lang->get('information'); ?>', {
-                timeOut: 0
-            }
-        );
-    </script>
-<?php
-}
 $lang = new Language($session->get('user-language') ?? 'english');
 $session = SessionManager::getSession();
 $request = SymfonyRequest::createFromGlobals();
@@ -83,6 +64,25 @@ $request = SymfonyRequest::createFromGlobals();
         $('#switch-theme').on('click', function() {
             applyTheme(true);
         });
+
+        // Is maintenance on-going?
+        <?php
+        if (
+            isset($SETTINGS['maintenance_mode']) === true
+            && (int) $SETTINGS['maintenance_mode'] === 1
+            && ($session_user_admin === null
+                || (int) $session_user_admin === 1)
+        ) {
+        ?>
+            toastr.remove();
+            toastr.info(
+                '<?php echo $lang->get('index_maintenance_mode_admin'); ?>',
+                '<?php echo $lang->get('information'); ?>', {
+                    timeOut: 0
+                }
+            );
+        <?php } ?>
+
     });
 
     /**
