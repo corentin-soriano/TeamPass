@@ -313,12 +313,17 @@
 
 label[for="limited-search"] {
     font-weight: normal !important;
+    padding-left: 40px !important;
 }
 
-label[for="limited-search"].active {
-    background-color: #009ae7 !important;
-    border-color: #0078b4 !important;
-    font-weight: bold !important;
+label[for="limited-search"]::before {
+    margin-top: 3px;
+    left: 0.5em !important;
+}
+
+label[for="limited-search"]::after {
+    margin-top: 3px;
+    left: 0.6em !important;
 }
 
 /* Some issues with background-image on buttons in 

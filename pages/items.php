@@ -984,14 +984,14 @@ foreach ($rows as $reccord) {
                                     </button>
                                 </div>
                             </div>
-                            <div class="col text-right">
+                            <div class="col text-right custom-control custom-switch">
                                 <div class="input-group input-group-sm form-check form-switch m-auto">
                                     <input type="text" class="form-control" placeholder="<?php echo $lang->get('find'); ?>" id="find_items">
                                     <div class="input-group-append">
 
-                                    <input type="checkbox" class="btn-check d-none"
+                                    <input type="checkbox" class="custom-control-input"
                                            id="limited-search" autocomplete="off">
-                                    <label class="btn btn-primary" for="limited-search">
+                                    <label class="custom-control-label btn btn-primary" for="limited-search">
                                         <?php echo $lang->get('limited_search'); ?>
                                     </label>
 
