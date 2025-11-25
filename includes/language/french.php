@@ -1203,8 +1203,7 @@ return array(
     'number_users_build_cache_tree' => 'Nombre d&apos;utilisateurs traités par build_cache_tree.',
     'number_users_build_cache_tree_tip' => 'Nombre d&apos;utilisateurs traités par build_cache_tree à chaque lancement du scheduler.',
     'user_password_expired' => 'Ton mot de passe est expiré. Merci de le changer.',
-    'user_password_policy_tip' => 'Le nouveau mot de passe doit :<br/> - Etre différent du précédent<br/> - Contenir au moins 10 caractères<br/> - Contenir au moins une lettre en majuscule et une en minuscule<br/> - Contenir au moins un chiffre ou caractère spécial<br/> - Ne pas contenir votre nom/prénom/identifiant/mail.
-',
+    'user_password_policy_tip' => 'Le nouveau mot de passe doit :<br/> - Etre différent du précédent<br/> - Contenir au moins 10 caractères<br/> - Contenir au moins une lettre en majuscule et une en minuscule<br/> - Contenir au moins un chiffre ou caractère spécial<br/> - Ne pas contenir votre nom/prénom/identifiant/mail.',
     'bruteforce_unlock_at' => 'Déblocage du compte (anti bruteforce) : ',
     'bruteforce_reset_account' => 'Réinitialiser l&apos;anti bruteforce de l&apos;utilisateur',
     'bruteforce_reset_mail_subject' => 'TEAMPASS - Votre compte est désactivé',
@@ -1215,5 +1214,7 @@ return array(
     'disable_user_edit_tree_load_strategy' => 'Les utilisateurs ne peuvent plus changer de stratégie de chargement',
     'bruteforce_wait' => 'Trop de tentatives échouées, votre compte est bloqué jusqu&apos;à : ',
     'disable_drag_drop' => 'Désactiver le glisser-déposer d&apos;objets',
+    'at_phone_number' => 'Numéro de téléphone',
+    'at_otp_secret' => 'Clé de l&apos;OTP',
 
 );
