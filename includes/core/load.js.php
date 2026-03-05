@@ -310,7 +310,7 @@ $request = SymfonyRequest::createFromGlobals();
                     $('#button_do_user_change_password').after('<button class="btn btn-primary" id="button_do_pwds_checks"><?php echo $lang->get('perform_checks'); ?></button>');
 
                     // Show passwords inputs and form
-                    $('#dialog-user-change-password-info').html('<i class="icon fa-solid fa-info mr-2"></i><?php echo $lang->get('user_password_expired'); ?>').removeClass('hidden');
+                    $('#dialog-user-change-password-info').html('<i class="icon fa-solid fa-info mr-2"></i><?php echo $lang->get('user_password_policy_tip'); ?>').removeClass('hidden');
                     $('#dialog-user-change-password-progress').html('<i class="icon fa-solid fa-info mr-2"></i><?php echo $lang->get('change_your_password_info_message'); ?>');
                     $('#dialog-user-change-password').removeClass('hidden');
                 }

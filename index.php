@@ -758,10 +758,6 @@ if ((null === $session->get('user-validite_pw') || empty($session->get('user-val
                                         <span class="input-group-text"><?php echo $lang->get('index_new_pw'); ?></span>
                                     </div>
                                     <input type="password" class="form-control" id="profile-password">
-                                    <div class="input-group-append" style="margin: 0px;">
-                                        <span class="input-group-text" id="profile-password-strength"></span>
-                                        <input type="hidden" id="profile-password-complex" />
-                                    </div>
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
